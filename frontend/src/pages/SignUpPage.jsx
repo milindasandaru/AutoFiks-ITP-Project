@@ -1,6 +1,15 @@
 import { motion } from "framer-motion";
 import Input from "../components/Input";
-import { User, Mail, Lock, Loader } from "lucide-react";
+import {
+  User,
+  Mail,
+  Lock,
+  Loader,
+  UserRoundMinus,
+  House,
+  Phone,
+  IdCard,
+} from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
@@ -8,15 +17,19 @@ import { useAuthStore } from "../store/authStore";
 
 const SignUpPage = () => {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
+  const [NIC, setNIC] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
   const navigate = useNavigate();
   const { signup, error, isLoading } = useAuthStore();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await signup(email, password, name);
+      await signup(mail, password, name, username, phone, NIC, address);
       navigate("/verify-email");
     } catch (error) {
       console.log(error);
@@ -42,11 +55,39 @@ const SignUpPage = () => {
             onChange={(e) => setName(e.target.value)}
           ></Input>
           <Input
+            icon={House}
+            type="text"
+            placeholder="Address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          ></Input>
+          <Input
+            icon={Phone}
+            type="text"
+            placeholder="Phone number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          ></Input>
+          <Input
+            icon={IdCard}
+            type="text"
+            placeholder="NIC"
+            value={NIC}
+            onChange={(e) => setNIC(e.target.value)}
+          ></Input>
+          <Input
+            icon={UserRoundMinus}
+            type="text"
+            placeholder="Enter a username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          ></Input>
+          <Input
             icon={Mail}
             type="email"
             placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={mail}
+            onChange={(e) => setMail(e.target.value)}
           ></Input>
           <Input
             icon={Lock}

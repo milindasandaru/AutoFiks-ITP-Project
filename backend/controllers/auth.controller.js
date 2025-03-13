@@ -12,14 +12,22 @@ import { User } from "../models/user.model.js";
 export const signup = async (req, res) => {
   console.log("Received body:", req.body);
 
-  const { email, password, name } = req.body;
+  const { mail, password, name, address, NIC, username, phone } = req.body;
 
   try {
-    if (!email || !password || !name) {
+    if (
+      !mail ||
+      !password ||
+      !name ||
+      !address ||
+      !NIC ||
+      !username ||
+      !phone
+    ) {
       throw new Error("All feilds requred!");
     }
 
-    const userAlreadyExists = await User.findOne({ email });
+    const userAlreadyExists = await User.findOne({ mail });
     if (userAlreadyExists) {
       return res
         .status(400)
@@ -33,9 +41,13 @@ export const signup = async (req, res) => {
     ).toString();
 
     const user = new User({
-      email,
+      mail,
+      username,
       password: hashPassword,
       name,
+      address,
+      phone,
+      NIC,
       verificationToken,
       verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24hours
     });
@@ -45,7 +57,7 @@ export const signup = async (req, res) => {
     //jwt token verification part
     generateTokenAndSetCookie(res, user._id);
 
-    await sendVerificationEmail(user.email, verificationToken);
+    await sendVerificationEmail(user.mail, verificationToken);
 
     res.status(201).json({
       success: true,
@@ -81,7 +93,7 @@ export const verifyEmail = async (req, res) => {
 
     await user.save();
 
-    await sendWelcomeEmail(user.email, user.name);
+    await sendWelcomeEmail(user.mail, user.name);
 
     res.status(200).json({
       success: true,
@@ -100,9 +112,9 @@ export const verifyEmail = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { mail, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ mail });
     if (!user) {
       return res
         .status(400)
@@ -142,9 +154,9 @@ export const logout = async (req, res) => {
 };
 
 export const forgotPassword = async (req, res) => {
-  const { email } = req.body;
+  const { mail } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ mail });
 
     if (!user) {
       return res
@@ -161,7 +173,7 @@ export const forgotPassword = async (req, res) => {
     await user.save();
 
     await sendPasswordResetMail(
-      user.email,
+      user.mail,
       `${process.env.CLIENT_URL}/resetpassword/${resetToken}`
     );
 
@@ -198,7 +210,7 @@ export const resetPassword = async (req, res) => {
 
     await user.save();
 
-    await sendResetSuccessEmail(user.email);
+    await sendResetSuccessEmail(user.mail);
 
     res
       .status(200)

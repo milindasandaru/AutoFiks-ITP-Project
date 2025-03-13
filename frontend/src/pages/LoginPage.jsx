@@ -6,13 +6,13 @@ import Input from "../components/Input";
 import { useAuthStore } from "../store/authStore";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
+  const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
   const { error, isLoading, login } = useAuthStore();
 
   const handleLogin = async (e) => {
     e.preventDefault;
-    await login(email, password);
+    await login(mail, password);
   };
 
   return (
@@ -31,8 +31,8 @@ const LoginPage = () => {
             icon={Mail}
             type="email"
             placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={mail}
+            onChange={(e) => setMail(e.target.value)}
           ></Input>
           <Input
             icon={Lock}
