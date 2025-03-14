@@ -7,12 +7,15 @@ import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
 import HomePage from "./pages/HomePage";
+import EmployeeDashboard from "./pages/EmployeeDashboard";
 
 //protected routees that require authentication
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
 
-  if (!isAuthenticated) {
+  console.log("ProtectedRoute state:", isAuthenticated, user); // Debugging
+
+  if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;
   }
 
@@ -41,8 +44,8 @@ function App() {
     checkAuth();
   }, [checkAuth]);
 
-  console.log("Is authenticated: ", isAuthenticated);
-  console.log("User: ", user);
+  console.log("App.jsx - Is authenticated: ", isAuthenticated);
+  console.log("App.jsx - User: ", user);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-900 to-emerald-900 flex items-center justify-center relative overflow-hidden">
@@ -94,6 +97,10 @@ function App() {
           }
         ></Route>
         <Route path="/verify-email" element={<EmailVerificationPage />} />
+        <Route
+          path="/employee-dashboard"
+          element={<EmployeeDashboard />}
+        ></Route>
       </Routes>
       <Toaster />
     </div>

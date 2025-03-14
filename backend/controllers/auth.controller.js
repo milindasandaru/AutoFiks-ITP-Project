@@ -114,14 +114,51 @@ export const verifyEmail = async (req, res) => {
 export const login = async (req, res) => {
   const { mail, password } = req.body;
   try {
-    const user = await User.findOne({ mail });
+    let user = await User.findOne({ mail });
     if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalide credentials" });
+      // If not found in User collection, check in Employee collection
+      const Employee = mongoose.model(
+        "Employee",
+        new mongoose.Schema(),
+        "employee"
+      ); // Dynamically create Employee model
+      user = await Employee.findOne({ mail });
+
+      if (!user) {
+        console.log("User not found", mail);
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid credentials" });
+      }
+      const isPasswordValid = await bcryptjs.compare(password, user.password);
+      if (!isPasswordValid) {
+        console.log("Employee password invalid");
+        return res
+          .status(400)
+          .json({ success: true, message: "Invalid credentials" });
+      }
+
+      generateTokenAndSetCookie(res, user._id);
+
+      user.lastLogin = new Date();
+      await user.save();
+
+      res.status(200).json({
+        success: true,
+        message: "Employee Logged in successfully",
+        user: {
+          ...user._doc,
+          isVerified: user.isVerified ?? false,
+          password: undefined,
+        },
+        role: "employee",
+      });
     }
+
+    //If user found authenticatte user
     const isPasswordValid = await bcryptjs.compare(password, user.password);
     if (!isPasswordValid) {
+      console.log("User password invalid");
       return res
         .status(400)
         .json({ success: true, message: "Invalid credentials" });
@@ -137,11 +174,13 @@ export const login = async (req, res) => {
       message: "Logged in successfully",
       user: {
         ...user._doc,
+        isVerified: user.isVerified ?? false,
         password: undefined,
       },
+      role: "user",
     });
   } catch (error) {
-    console.log("Eorro in login function", error);
+    console.log("Error in login function", error);
     res.status(400).json({ success: false, message: error.message });
   }
 };

@@ -4,12 +4,13 @@ import axios from "axios";
 const API_URL = "http://localhost:8070/api/auth";
 
 axios.defaults.withCredentials = true;
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set, get) => ({
   user: { isVerified: false },
   isAuthenticated: false,
   error: null,
   isLoading: false,
   isCheckingAuth: true,
+  role: null,
 
   signup: async (mail, password, name, username, phone, NIC, address) => {
     set({ isLoading: true, error: null });
@@ -75,19 +76,31 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  login: async (mail, password) => {
+  login: async (mail, password, navigate) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(`${API_URL}/login`, {
         mail,
         password,
       });
-      set({
+      console.log("Login API Response: ", response.data);
+
+      set((state) => ({
+        ...state,
         isAuthenticated: true,
         user: response.data.user,
+        role: response.data.role,
         error: null,
         isLoading: false,
-      });
+      }));
+
+      console.log("Updated auth state: ", get());
+
+      if (response.data.role == "user") {
+        navigate("/");
+      } else if (response.data.role == "employee") {
+        navigate("/employee-dashboard");
+      }
     } catch (error) {
       set({
         error: error.response?.data?.message || "Error login in",
