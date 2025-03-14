@@ -9,6 +9,8 @@ import SpareParts from './pages/SpareParts'
 import Analytics from './pages/Analytics'
 import Profile from './pages/Profile'
 import Setting from './pages/Setting'
+import CreateEmployee from './pages/CreateEmployee'
+import UpdateEmployee from './pages/UpdateEmployee'
 import './App.css'
 
 function App() {
@@ -26,6 +28,8 @@ function App() {
           <Route path='analytics' element={<Analytics />} />
           <Route path='profile' element={<Profile />} />
           <Route path='setting' element={<Setting />} />
+          <Route path='createEmployee' element={<CreateEmployee />} />
+          <Route path='updateEmployee' element={<UpdateEmployee />} />
         </Route>
       </Routes>
     </BrowserRouter>
