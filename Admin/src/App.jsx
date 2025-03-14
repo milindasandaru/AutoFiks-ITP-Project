@@ -1,12 +1,34 @@
-//import { useState } from 'react'
+import { BrowserRouter, Route, Routes  } from 'react-router-dom'
+import Layout from './components/Layout'
+import AdminDashboard from './pages/AdminDashboard'
+import ServiceTicket from './pages/ServiceTicket'
+import Employee from './pages/Employee'
+import Customer from './pages/Customer'
+import Billing from './pages/Billing'
+import SpareParts from './pages/SpareParts'
+import Analytics from './pages/Analytics'
+import Profile from './pages/Profile'
+import Setting from './pages/Setting'
 import './App.css'
 
 function App() {
 
   return (
-    <>
-     <h1 className='text-blue-500 font-light'>Hello world!</h1>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path='service_ticket' element={<ServiceTicket />} />
+          <Route path='employee' element={<Employee />} />
+          <Route path='customer' element={<Customer />} />
+          <Route path='billing' element={<Billing />} />
+          <Route path='spare_parts' element={<SpareParts />} />
+          <Route path='analytics' element={<Analytics />} />
+          <Route path='profile' element={<Profile />} />
+          <Route path='setting' element={<Setting />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
