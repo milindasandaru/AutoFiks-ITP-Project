@@ -1,5 +1,5 @@
 {
-  "name": "admin",
+  "name": "admin.json",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.1",
+    "@tailwindcss/vite": "^4.0.14",
     "autoprefixer": "^10.4.21",
     "axios": "^1.8.3",
     "dotenv": "^16.4.7",
