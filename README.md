@@ -1,2 +1,3 @@
 # AutoFiks-ITP-Project
-Spare parts and automobile service system management
+Autofiks is a spare parts and automobile service system management system create for KDS motors to manage their business.
+
