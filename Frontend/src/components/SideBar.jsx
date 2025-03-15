@@ -14,7 +14,7 @@ const SideBar = () => {
 
   const SIDEBAR_LINKS1 = [
     { id: 1, path: "/", name: "Overview", icon: HiOutlineSquares2X2 },
-    { id: 2, path: "/scheduling", name: "Work Schedule", icon: HiOutlineClipboardDocumentList},
+    { id: 2, path: "/workSchedule", name: "Work Schedule", icon: HiOutlineClipboardDocumentList},
     { id: 3, path: "/leaving", name: "Leaving Request", icon: HiOutlineChatBubbleBottomCenterText },
     { id: 4, path: "/earning", name: "Earning", icon: HiOutlineDocumentCurrencyDollar },
   ];

@@ -1,45 +1,66 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { getEmployees, deleteEmployee } from '../services/employeeService';
 
 const Employee = () => {
-  const [employees, setEmployee] = useState([{
-    Name: "sams", Email: "sams@gmail.com", Age: 24
-  }])
+    const [employees, setEmployees] = useState([{}]);
+    const [loading, setLoading] = useState(true);
+    
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
 
-  return (
-    <div>
-      <div className="flex min-h-screen bg-blue-500 justify-center items-center">
-        <div className="w-1/2 bg-white rounded p-3 shadow-lg">
-        <Link to='/createEmployee' className='border-blue-200 text-blue-600 hover:border-transparent hover:bg-blue-600 hover:text-white active:bg-blue-700'>Add +</Link>
-          <table className='table-auto w-full border-collapse border border-gray-200"'>
-             <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Age</th>
-                <th>Action</th>
-              </tr>
-             </thead>
-             <tbody>
-              {
-                employees.map((employee) => {
-                  return <tr>
-                    <td>{employee.Name}</td>
-                    <td>{employee.Email}</td>
-                    <td>{employee.Age}</td>
-                    <td><button className="px-2 py-1 bg-yellow-500 text-white rounded">
-                    <Link to='/updateEmployee' className='border-blue-200 text-blue-600 hover:border-transparent hover:bg-blue-600 hover:text-white active:bg-blue-700'>Edit</Link>
-                      </button><button className="px-2 py-1 bg-red-500 text-white rounded">Delete</button></td>
-                  </tr>
-                })
-              }
-             </tbody>
-          </table>
+    const fetchEmployees = async () => {
+        try {
+            const { data } = await getEmployees();
+            setEmployees(data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching employees:', error);
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this employee?')) {
+            try {
+                await deleteEmployee(id);
+                fetchEmployees();
+            } catch (error) {
+                console.error('Error deleting employee:', error);
+            }
+        }
+    };
+
+    return (
+        <div className="container mx-auto p-4">
+            <Link to='/createEmployee' className='bg-blue-500 text-white px-4 py-2 rounded'>Add +</Link>
+            {loading ? <p>Loading employees...</p> : (
+                <table className='w-full mt-4 border'>
+                    <thead>
+                        <tr>
+                            <th>Name</th><th>Email</th><th>Phone</th><th>Position</th><th>Salary</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {employees.map(emp => ( 
+                            <tr key={emp._id}>
+                                <td>{emp.name}</td>
+                                <td>{emp.email}</td>
+                                <td>{emp.phone}</td>
+                                <td>{emp.position}</td>
+                                <td>{emp.salary}</td>
+                                <td>
+                                    <Link to={`/updateEmployee/${emp._id}`} className='text-yellow-500 px-2'>Edit</Link>
+                                    <button onClick={() => handleDelete(emp._id)} className='text-red-500 px-2'>Delete</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
-      </div>
-    </div>
-  )
-}
+    );
+};
 
-export default Employee
+export default Employee;

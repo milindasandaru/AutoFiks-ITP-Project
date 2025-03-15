@@ -29,7 +29,7 @@ function App() {
           <Route path='profile' element={<Profile />} />
           <Route path='setting' element={<Setting />} />
           <Route path='createEmployee' element={<CreateEmployee />} />
-          <Route path='updateEmployee' element={<UpdateEmployee />} />
+          <Route path='updateEmployee/:id' element={<UpdateEmployee />} />
         </Route>
       </Routes>
     </BrowserRouter>
