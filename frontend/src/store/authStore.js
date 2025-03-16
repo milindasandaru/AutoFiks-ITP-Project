@@ -97,7 +97,7 @@ export const useAuthStore = create((set, get) => ({
       console.log("Updated auth state: ", get());
 
       if (response.data.role == "user") {
-        navigate("/");
+        navigate("/overview");
       } else if (response.data.role == "employee") {
         navigate("/employee-dashboard");
       }

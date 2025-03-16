@@ -6,8 +6,9 @@ import EmailVerificationPage from "./pages/EmailVerificationPage";
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
-import HomePage from "./pages/HomePage";
+import OverviewPage from "./pages/OverviewPage";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
+import UserProfilePage from "./pages/UserProfilePage";
 
 //protected routees that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -31,7 +32,7 @@ const RedirectAuthenticatedUser = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
 
   if (isAuthenticated && user.isVerified) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/overview" replace />;
   }
 
   return children;
@@ -71,15 +72,19 @@ function App() {
         delay={2}
       />
 
+      {/*Main sections*/}
       <Routes>
+        <Route path="/" element={<Navigate to="/overview" replace />} />
         <Route
-          path="/"
+          path="/overview"
           element={
             <ProtectedRoute>
-              <HomePage />
+              <OverviewPage />
             </ProtectedRoute>
           }
         ></Route>
+
+        {/*Authentication sections*/}
         <Route
           path="/signup"
           element={
@@ -97,10 +102,13 @@ function App() {
           }
         ></Route>
         <Route path="/verify-email" element={<EmailVerificationPage />} />
+
+        {/*Main navigations*/}
         <Route
           path="/employee-dashboard"
           element={<EmployeeDashboard />}
         ></Route>
+        <Route path="/user-profile" element={<UserProfilePage />}></Route>
       </Routes>
       <Toaster />
     </div>
