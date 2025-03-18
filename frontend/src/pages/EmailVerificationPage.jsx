@@ -63,17 +63,17 @@ const EmailVerificationPage = () => {
   // Add dependency array to prevent infinite re-renders
 
   return (
-    <div className="max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
+    <div className="max-w-md w-full bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-2xl p-8 w-full max-w-md"
+        className="bg-white bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-2xl p-8 w-full max-w-md"
       >
-        <h2 className=" text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-500 text-transparent bg-clip-text">
+        <h2 className=" text-3xl font-bold mb-6 text-center bg-[#2563eb] text-transparent bg-clip-text">
           Verify your Email
         </h2>
-        <p className="text-center text-gray-300 mb-6">
+        <p className="text-center text-[#a3a3a3] mb-6">
           Enter the 6-digit code sent to your email address.
         </p>
         <form className="space-y-6" onSubmit={handleSubmit}>
@@ -87,7 +87,7 @@ const EmailVerificationPage = () => {
                 value={digit}
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-12 h-12 text-center text-2xl font-bold bg-gray-700 text-white border-2 border-gray rounded-lg focus:border-green-500 focus:outline-none"
+                className="w-12 h-12 text-center text-2xl font-bold bg-[#d4d4d8] text-black border-2 border-gray rounded-lg focus:border-blue-500 focus:outline-none"
               />
             ))}
           </div>
@@ -97,7 +97,7 @@ const EmailVerificationPage = () => {
             whileTap={{ scale: 0.95 }}
             type="submit"
             disabled={isLoading || code.some((digit) => !digit)}
-            className="w-full bg-gradient-to-r from-green-500 to-emerald-600 txet-white font-bold py-3 px-4 rounded-lg hover:from-green-600 hover:to-emerald-700 focus:outilne-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 disabled:opacity-50"
+            className="w-full bg-[#2563eb] text-white font-bold py-3 px-4 rounded-lg  focus:outilne-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 "
           >
             {isLoading ? "Verifying..." : "Verify Email"}
           </motion.button>

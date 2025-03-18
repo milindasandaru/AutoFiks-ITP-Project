@@ -9,6 +9,9 @@ import { useEffect } from "react";
 import OverviewPage from "./pages/OverviewPage";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import UserProfilePage from "./pages/UserProfilePage";
+import EditUserProfilePage from "./pages/EditUserProfilePage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 //protected routees that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -103,12 +106,39 @@ function App() {
         ></Route>
         <Route path="/verify-email" element={<EmailVerificationPage />} />
 
+        <Route
+          path="/forgot-password"
+          element={
+            <RedirectAuthenticatedUser>
+              <ForgotPasswordPage />
+            </RedirectAuthenticatedUser>
+          }
+        />
+
+        <Route
+          path="/reset-password/:token"
+          element={
+            <RedirectAuthenticatedUser>
+              <ResetPasswordPage />
+            </RedirectAuthenticatedUser>
+          }
+        />
+
         {/*Main navigations*/}
         <Route
           path="/employee-dashboard"
           element={<EmployeeDashboard />}
         ></Route>
         <Route path="/user-profile" element={<UserProfilePage />}></Route>
+
+        {/*User profile navigation*/}
+        <Route
+          path="/edit-user-profile"
+          element={<EditUserProfilePage />}
+        ></Route>
+
+        {/* For invalid routes*/}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Toaster />
     </div>
