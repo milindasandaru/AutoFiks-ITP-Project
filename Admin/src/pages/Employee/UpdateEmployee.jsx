@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getEmployeeById, updateEmployee } from '../services/employeeService';
+import { getEmployeeById, updateEmployee } from '/Milinda/coding/git/AutoFiks-ITP-Project/Admin/src/services/employeeService.js';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const UpdateEmployee = () => {

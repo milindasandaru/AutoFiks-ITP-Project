@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createEmployee } from '../services/employeeService';
+import { createEmployee } from '/Milinda/coding/git/AutoFiks-ITP-Project/Admin/src/services/employeeService.js';
 import { useNavigate } from 'react-router-dom';
 
 const CreateEmployee = () => {
@@ -46,7 +46,7 @@ const CreateEmployee = () => {
             <h2 className='text-xl'>Create Employee</h2>
             {error && <p className='text-red-500'>{error}</p>}
             {generatedId && <p className="text-green-500">Generated Employee ID: {generatedId}</p>}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} >
                 <input type='text' name='name' value={formData.name} onChange={handleChange} placeholder='Name' required />
                 <input type='email' name='email' value={formData.email} onChange={handleChange} placeholder='Email' required />
                 <input type='text' name='phone' value={formData.phone} onChange={handleChange} placeholder='Phone' required />

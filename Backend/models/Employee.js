@@ -11,6 +11,7 @@ const employeeSchema = new mongoose.Schema({
     position: { type: String, required: true, trim: true },
     salary: { type: Number, required: true},
     createdAt: { type: Date, default: Date.now },
+    qrCode:{ type:String, unique: true, required:true}
 });
 
 export default mongoose.model("Employee", employeeSchema);

@@ -1,4 +1,6 @@
 import Employee from "../models/Employee.js";
+import QRCode from "qrcode";
+import { v4 as uuidv4 } from "uuid";
 
 // Auto generated employee Id
 const generateEmployeeId = async () => {
@@ -11,18 +13,44 @@ const generateEmployeeId = async () => {
   }
 
   return `EMP${newIdNumber.toString().padStart(5, '0')}`;
-};
+}; 
 
 // Create Employee
-export const createEmployee = async (req, res) => {
+/*export const createEmployee = async (req, res) => {
     try {
       const employeeId = await generateEmployeeId();
-        const employee = new Employee({...req.body, employeeId});
+
+        // generate qr code
+        const qrCodeDataURL = await QRCode.toDataURL(employeeId);
+
+        const employee = new Employee({...req.body, employeeId, QRCode: qrCodeDataURL });
         await employee.save();
         res.status(201).json(employee);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+};*/
+
+export const createEmployee = async (req, res) => {
+  try {
+    const employeeId = await generateEmployeeId();
+
+    // Generate QR Code (Using Employee ID)
+    const qrCodeDataURL = await QRCode.toDataURL(employeeId);
+
+    if (!qrCodeDataURL) {
+      return res.status(500).json({ message: "QR Code generation failed" });
+    }
+
+    // Create Employee with QR Code
+    const employee = new Employee({ ...req.body, employeeId, qrCode: qrCodeDataURL });
+    await employee.save();
+
+    res.status(201).json(employee);
+  } catch (error) {
+    console.error("Error creating employee:", error);
+    res.status(500).json({ message: "Error creating employee" });
+  }
 };
 
 // Get All Employees
