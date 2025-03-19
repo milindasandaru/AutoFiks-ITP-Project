@@ -2,9 +2,9 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Lock, Loader } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import Input from "../components/Input";
-import { useAuthStore } from "../store/authStore";
-import logo from "../assets/images/AMS_logo2.png";
+import Input from "../../components/user/Input";
+import { useAuthStore } from "../../store/authStore";
+import logo from "../../assets/images/AMS_logo2.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFacebook,

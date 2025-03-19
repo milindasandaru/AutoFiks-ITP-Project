@@ -1,17 +1,23 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import FloatingShape from "./components/FloatingShape";
-import SignUpPage from "./pages/SignUpPage";
-import LoginPage from "./pages/LoginPage";
-import EmailVerificationPage from "./pages/EmailVerificationPage";
+import FloatingShape from "./components/user/FloatingShape";
+import SignUpPage from "./pages/user/SignUpPage";
+import LoginPage from "./pages/user/LoginPage";
+import EmailVerificationPage from "./pages/user/EmailVerificationPage";
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
-import OverviewPage from "./pages/OverviewPage";
-import EmployeeDashboard from "./pages/EmployeeDashboard";
-import UserProfilePage from "./pages/UserProfilePage";
-import EditUserProfilePage from "./pages/EditUserProfilePage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
+import OverviewPage from "./pages/user/OverviewPage";
+import UserProfilePage from "./pages/user/UserProfilePage";
+import EditUserProfilePage from "./pages/user/EditUserProfilePage";
+import ForgotPasswordPage from "./pages/user/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/user/ResetPasswordPage";
+import Layout from "./components/employee/Layout";
+import EmployeeDashboard from "./pages/employee/EmployeeDashboard";
+import WorkSchedule from "./pages/employee/WorkSchedule";
+import Leaving from "./pages/employee/Leaving";
+import Earning from "./pages/employee/Earning";
+import Profile from "./pages/employee/Profile";
+import HelpCenter from "./pages/employee/HelpCenter";
 
 //protected routees that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -32,17 +38,19 @@ const ProtectedRoute = ({ children }) => {
 
 //Redirect authenticated users into home page
 const RedirectAuthenticatedUser = ({ children }) => {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, role } = useAuthStore();
 
-  if (isAuthenticated && user.isVerified) {
+  if (isAuthenticated && user.isVerified && role === "user") {
     return <Navigate to="/overview" replace />;
+  } else if (isAuthenticated && user.isVerified && role === "employee") {
+    return <Navigate to="/employee-dashboard" replace />;
   }
 
   return children;
 };
 
 function App() {
-  const { checkAuth, isAuthenticated, user } = useAuthStore();
+  const { checkAuth, isAuthenticated, user, role } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -50,6 +58,7 @@ function App() {
 
   console.log("App.jsx - Is authenticated: ", isAuthenticated);
   console.log("App.jsx - User: ", user);
+  console.log("App.jsx - Role: ", role);
 
   return (
     <div className="min-h-screen bg-[#f3f4f6] flex items-center justify-center relative overflow-hidden">
@@ -124,18 +133,23 @@ function App() {
           }
         />
 
-        {/*Main navigations*/}
-        <Route
-          path="/employee-dashboard"
-          element={<EmployeeDashboard />}
-        ></Route>
+        {/*User Navigation*/}
         <Route path="/user-profile" element={<UserProfilePage />}></Route>
 
-        {/*User profile navigation*/}
         <Route
           path="/edit-user-profile"
           element={<EditUserProfilePage />}
         ></Route>
+
+        {/*Employee navigationa*/}
+        <Route path="/employee-dashboard" element={<Layout />}>
+          <Route index element={<EmployeeDashboard />} />
+          <Route path="workSchedule" element={<WorkSchedule />} />
+          <Route path="leaving" element={<Leaving />} />
+          <Route path="earning" element={<Earning />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="helpcenter" element={<HelpCenter />} />
+        </Route>
 
         {/* For invalid routes*/}
         <Route path="*" element={<Navigate to="/" replace />} />

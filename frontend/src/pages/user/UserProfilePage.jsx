@@ -1,12 +1,12 @@
-import Sidebar from "../components/UserDashboardNavBar";
+import Sidebar from "../../components/user/UserDashboardNavBar";
 import { motion } from "framer-motion";
-import { useUserStore } from "../store/userStore.js";
+import { useUserStore } from "../../store/userStore.js";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "../../store/authStore";
 import axios from "axios";
 
 const UserProfilePage = () => {

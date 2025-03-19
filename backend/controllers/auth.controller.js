@@ -8,6 +8,7 @@ import {
   sendResetSuccessEmail,
 } from "../mails/emails.js";
 import { User } from "../models/user.model.js";
+import Employee from "../models/Employee.js";
 
 export const signup = async (req, res) => {
   console.log("Received body:", req.body);
@@ -75,10 +76,21 @@ export const signup = async (req, res) => {
 export const verifyEmail = async (req, res) => {
   const { code } = req.body;
   try {
-    const user = await User.findOne({
+    let user = await User.findOne({
       verificationToken: code,
       verificationTokenExpiresAt: { $gt: Date.now() },
     });
+
+    let role = null;
+
+    if (!user) {
+      user = await Employee.findOne({
+        verificationToken: code,
+        verificationTokenExpiresAt: { $gt: Date.now() },
+      });
+
+      role = "employee";
+    }
 
     if (!user) {
       return res.status(400).json({
@@ -102,6 +114,7 @@ export const verifyEmail = async (req, res) => {
         ...user._doc,
         password: undefined,
       },
+      role: role,
     });
   } catch (error) {
     res
@@ -117,11 +130,6 @@ export const login = async (req, res) => {
     let user = await User.findOne({ mail });
     if (!user) {
       // If not found in User collection, check in Employee collection
-      const Employee = mongoose.model(
-        "Employee",
-        new mongoose.Schema(),
-        "employee"
-      ); // Dynamically create Employee model
       user = await Employee.findOne({ mail });
 
       if (!user) {
@@ -130,20 +138,30 @@ export const login = async (req, res) => {
           .status(400)
           .json({ success: false, message: "Invalid credentials" });
       }
-      const isPasswordValid = await bcryptjs.compare(password, user.password);
-      if (!isPasswordValid) {
+      if (user.password !== password) {
         console.log("Employee password invalid");
         return res
           .status(400)
-          .json({ success: true, message: "Invalid credentials" });
+          .json({ success: false, message: "Invalid credentials" });
       }
 
       generateTokenAndSetCookie(res, user._id);
 
-      user.lastLogin = new Date();
+      const newVerificationToken = Math.floor(
+        100000 + Math.random() * 900000
+      ).toString();
+
+      console.log(newVerificationToken);
+
+      user.verificationToken = newVerificationToken;
+
+      user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+
       await user.save();
 
-      res.status(200).json({
+      await sendVerificationEmail(user.mail, newVerificationToken);
+
+      return res.status(200).json({
         success: true,
         message: "Employee Logged in successfully",
         user: {
@@ -264,7 +282,20 @@ export const resetPassword = async (req, res) => {
 
 export const checkAuth = async (req, res) => {
   try {
-    const user = await User.findById(req.userID);
+    let user = await User.findById(req.userID);
+    let role = user;
+    if (!user) {
+      user = await Employee.findById(req.userID);
+
+      if (!user) {
+        return res
+          .status(400)
+          .json({ success: false, message: "User not found" });
+      }
+
+      role = "employee";
+    }
+
     if (!user) {
       return res
         .status(400)
@@ -273,6 +304,7 @@ export const checkAuth = async (req, res) => {
     res.status(200).json({
       success: true,
       user,
+      role,
     });
   } catch (error) {
     console.log("Error in checkAuth", error);

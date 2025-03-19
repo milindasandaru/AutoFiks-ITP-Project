@@ -1,4 +1,4 @@
-import Sidebar from "../components/UserDashboardNavBar";
+import Sidebar from "../../components/user/UserDashboardNavBar";
 
 const OverviewPage = () => {
   return (

@@ -14,7 +14,7 @@ import {
   faBell,
   faPhoneSquare,
 } from "@fortawesome/free-solid-svg-icons";
-import logo from "../assets/images/AMS_logo2.png";
+import logo from "../../assets/images/AMS_logo2.png";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);

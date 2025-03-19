@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useUserStore } from "../store/userStore.js";
+import { useUserStore } from "../../store/userStore.js";
 import { motion } from "framer-motion";
 import { Loader } from "lucide-react";
 import { useNavigate } from "react-router-dom";

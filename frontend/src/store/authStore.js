@@ -38,16 +38,22 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  verifyEmail: async (code) => {
+  verifyEmail: async (code, navigate) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(`${API_URL}/verifyemail`, { code });
       set({
         user: response.data.user,
+        role: response.data.role,
         isAuthenticated: true,
         isLoading: false,
       });
       console.log("API Response from verify email:", response.data);
+      if (response.data.role === "employee") {
+        navigate("/employee-dashboard");
+      } else {
+        navigate("/");
+      }
       return response.data;
     } catch (error) {
       console.error("Verification Error:", error.response.data);
@@ -64,7 +70,9 @@ export const useAuthStore = create((set, get) => ({
     try {
       const response = await axios.get(`${API_URL}/checkauth`);
       console.log("API Response from checkauth:", response.data);
+
       set({
+        role: response.data.role,
         user: response.data.user,
         isAuthenticated: true,
         isCheckingAuth: false,
