@@ -1,10 +1,10 @@
-/*import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const AttendanceSchema = new mongoose.Schema({
-  employeeId: { type:String},
-  date: { type: Date, default: Date.now },
-  checkInTime: { type:String},
-  checkOutTime: { type:String}
+const attendanceSchema = new mongoose.Schema({
+  employeeId: { type: String, required: true },
+  date: { type: Date, required: true, default: Date.now },
+  clockIn: { type: Date },
+  clockOut: { type: Date },
 });
 
-export default mongoose.model("Attendance", AttendanceSchema);*/
+export default mongoose.model("Attendance", attendanceSchema);

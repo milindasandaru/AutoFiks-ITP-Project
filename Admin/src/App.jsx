@@ -11,6 +11,8 @@ import Profile from './pages/Profile'
 import Setting from './pages/Setting'
 import CreateEmployee from './pages/Employee/CreateEmployee'
 import UpdateEmployee from './pages/Employee/UpdateEmployee'
+import AttendancePage from './pages/Employee/AttendancePage'
+import AttendanceReport from './pages/Employee/AttendanceReport'
 import './App.css'
 
 function App() {
@@ -30,6 +32,8 @@ function App() {
           <Route path='setting' element={<Setting />} />
           <Route path='createEmployee' element={<CreateEmployee />} />
           <Route path='updateEmployee/:id' element={<UpdateEmployee />} />
+          <Route path='attendancePage' element={<AttendancePage />} />
+          <Route path='attendanceReport' element={<AttendanceReport />} />
         </Route>
       </Routes>
     </BrowserRouter>
