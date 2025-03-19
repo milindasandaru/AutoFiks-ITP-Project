@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
+import userAIRoutes from "./routes/userai.route.js";
 import cors from "cors";
 import { connectDB } from "./config/connectDB.js";
 
@@ -18,6 +19,7 @@ app.use(express.json()); //allows us to parse incoming requests:req.body
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/ai", userAIRoutes);
 
 app.listen(8070, () => {
   connectDB();
