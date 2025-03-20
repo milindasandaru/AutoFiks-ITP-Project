@@ -8,6 +8,8 @@ import employeeRoutes from "./routes/employeeRoutes.js";
 import cors from "cors";
 import { connectDB } from "./config/connectDB.js";
 
+import inquiryRoutes from "./routes/inquiryRoutes.js";
+
 dotenv.config();
 
 const app = express();
@@ -24,6 +26,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/ai", userAIRoutes);
 app.use("/api/employees", employeeRoutes);
+app.use("/api/inquiries", inquiryRoutes);
 
 app.listen(8070, () => {
   connectDB();

@@ -19,6 +19,11 @@ import Earning from "./pages/employee/Earning";
 import Profile from "./pages/employee/Profile";
 import HelpCenter from "./pages/employee/HelpCenter";
 
+import AddInquiry from "./pages/inquiry/AddInquiry";
+import ManageInquiry from "./pages/inquiry/ManageInquiry";
+import EditInquiry from "./pages/inquiry/EditInquiry";
+import ViewOneInquiry from "./pages/inquiry/ViewOneInquiry";
+
 //protected routees that require authentication
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
@@ -150,6 +155,12 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="helpcenter" element={<HelpCenter />} />
         </Route>
+
+         {/*Inquiry navigationa*/}
+         <Route path="/inquries/add" element={<AddInquiry />}/>
+         <Route path="/inquries/manage" element={<ManageInquiry />}/>
+         <Route path="/inquries/edit/:id" element={<EditInquiry />}/>
+         <Route path="/inquries/view/:id" element={<ViewOneInquiry />}/>
 
         {/* For invalid routes*/}
         <Route path="*" element={<Navigate to="/" replace />} />
