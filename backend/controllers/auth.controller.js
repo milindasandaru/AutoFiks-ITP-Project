@@ -147,20 +147,21 @@ export const login = async (req, res) => {
 
       generateTokenAndSetCookie(res, user._id);
 
-      const newVerificationToken = Math.floor(
-        100000 + Math.random() * 900000
-      ).toString();
+      if (user.isVerified == false) {
+        const newVerificationToken = Math.floor(
+          100000 + Math.random() * 900000
+        ).toString();
 
-      console.log(newVerificationToken);
+        console.log(newVerificationToken);
 
-      user.verificationToken = newVerificationToken;
+        user.verificationToken = newVerificationToken;
 
-      user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+        user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
 
-      await user.save();
+        await user.save();
 
-      await sendVerificationEmail(user.mail, newVerificationToken);
-
+        await sendVerificationEmail(user.mail, newVerificationToken);
+      }
       return res.status(200).json({
         success: true,
         message: "Employee Logged in successfully",
