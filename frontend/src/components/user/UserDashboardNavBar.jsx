@@ -27,7 +27,7 @@ const Sidebar = () => {
     { name: "Live Tracking", path: "/tracking", icon: faTruckMoving },
     { name: "Payment", path: "/payment", icon: faWallet },
     { name: "Notifications", path: "/notifications", icon: faBell },
-    { name: "Contact us", path: "/contact-us", icon: faPhoneSquare },
+    { name: "Contact us", path: "/inquries/add", icon: faPhoneSquare },
   ];
 
   const settingItems = [

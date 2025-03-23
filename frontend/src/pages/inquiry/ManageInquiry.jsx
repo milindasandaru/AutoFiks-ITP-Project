@@ -94,6 +94,7 @@ const ManageInquiry = () => {
               >
                 <div className="flex justify-between items-center">
                   <div>
+                  <p className="text-sm text-gray-600">Inquiry ID: {inquiry._id}</p>
                     <p className="text-lg font-semibold">{inquiry.userName}</p>
                     <p className="text-sm text-gray-600">{inquiry.mail}</p>
                     <p className="text-sm text-gray-600">

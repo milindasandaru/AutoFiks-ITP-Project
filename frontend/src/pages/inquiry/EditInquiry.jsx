@@ -1,14 +1,19 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Loader, AlertCircle, ArrowLeft, Edit } from "lucide-react"; // Added Edit icon
+import { Loader, Save, AlertCircle } from "lucide-react";
 import axios from "axios";
 import logo from "../../assets/images/AMS_logo2.png";
 
-const ViewOneInquiry = () => {
+const EditInquiry = () => {
   const { id } = useParams(); // Get the inquiry ID from the URL
   const navigate = useNavigate();
-  const [inquiry, setInquiry] = useState(null);
+  const [mail, setMail] = useState("");
+  const [userName, setUserName] = useState("");
+  const [serviceID, setServiceID] = useState("");
+  const [type, setType] = useState("feedback");
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState("normal");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -20,7 +25,13 @@ const ViewOneInquiry = () => {
           `http://localhost:8070/api/inquiries/${id}`
         );
         if (response.data.success) {
-          setInquiry(response.data.inquiry);
+          const inquiry = response.data.inquiry;
+          setMail(inquiry.mail);
+          setUserName(inquiry.userName);
+          setServiceID(inquiry.serviceID);
+          setType(inquiry.type);
+          setMessage(inquiry.message);
+          setStatus(inquiry.status || "normal");
         }
       } catch (error) {
         setError("Failed to fetch inquiry details.");
@@ -32,6 +43,32 @@ const ViewOneInquiry = () => {
 
     fetchInquiry();
   }, [id]);
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.put(
+        `http://localhost:8070/api/inquiries/${id}`,
+        {
+          mail,
+          userName,
+          serviceID,
+          type,
+          message,
+          status: type === "complaint" ? status : undefined, // Only include status for complaints
+        }
+      );
+
+      if (response.data.success) {
+        // Redirect to the view page of the newly created inquiry
+        navigate(`/inquiries/view/${response.data.inquiry._id}`);
+      }
+    } catch (error) {
+      console.error("Error updating inquiry:", error);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -49,14 +86,6 @@ const ViewOneInquiry = () => {
     );
   }
 
-  if (!inquiry) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-gray-600">Inquiry not found.</p>
-      </div>
-    );
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -69,84 +98,86 @@ const ViewOneInquiry = () => {
           <img src={logo} className="h-[75px]" alt="Logo" />
         </div>
         <h2 className="text-2xl font-medium font-poppins mb-6 text-center bg-black text-transparent bg-clip-text">
-          Inquiry Details
+          Edit Inquiry
         </h2>
+        <form onSubmit={handleSubmit}>
+          <p className="text-[#a3a3a3] mt-4">Email</p>
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={mail}
+            onChange={(e) => setMail(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled // Email is read-only
+          />
 
-        <div className="space-y-4">
-          <div>
-            <p className="text-[#a3a3a3]">Email</p>
-            <p className="text-black">{inquiry.mail}</p>
-          </div>
+          <p className="text-[#a3a3a3] mt-4">Full Name</p>
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled // Name is read-only
+          />
 
-          <div>
-            <p className="text-[#a3a3a3]">Full Name</p>
-            <p className="text-black">{inquiry.userName}</p>
-          </div>
+          <p className="text-[#a3a3a3] mt-4">Service ID</p>
+          <input
+            type="text"
+            placeholder="Service ID"
+            value={serviceID}
+            onChange={(e) => setServiceID(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled // Service ID is read-only
+          />
 
-          <div>
-            <p className="text-[#a3a3a3]">Service ID</p>
-            <p className="text-black">{inquiry.serviceID}</p>
-          </div>
+          <p className="text-[#a3a3a3] mt-4">Inquiry Type</p>
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="feedback">Feedback</option>
+            <option value="complaint">Complaint</option>
+          </select>
 
-          <div>
-            <p className="text-[#a3a3a3]">Inquiry Type</p>
-            <p className="text-black capitalize">{inquiry.type}</p>
-          </div>
-
-          {inquiry.type === "complaint" && (
-            <div>
-              <p className="text-[#a3a3a3]">Complaint Status</p>
-              <p
-                className={`font-semibold ${
-                  inquiry.status === "very important"
-                    ? "text-red-600"
-                    : inquiry.status === "important"
-                    ? "text-orange-600"
-                    : "text-green-600"
-                }`}
+          {type === "complaint" && (
+            <>
+              <p className="text-[#a3a3a3] mt-4">Complaint Status</p>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {inquiry.status}
-              </p>
-            </div>
+                <option value="normal">Normal</option>
+                <option value="important">Important</option>
+                <option value="very important">Very Important</option>
+              </select>
+            </>
           )}
 
-          <div>
-            <p className="text-[#a3a3a3]">Message</p>
-            <p className="text-black">{inquiry.message}</p>
-          </div>
-
-          <div>
-            <p className="text-[#a3a3a3]">Created At</p>
-            <p className="text-black">
-              {new Date(inquiry.createdAt).toLocaleString()}
-            </p>
-          </div>
-        </div>
-
-        <div className="flex justify-between mt-6">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate(-1)} // Go back to the previous page
-            className="w-1/2 py-3 px-4 bg-[#2563eb] text-white font-bold rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200"
-          >
-            <ArrowLeft size={20} className="inline-block mr-2" />
-            Go Back
-          </motion.button>
+          <p className="text-[#a3a3a3] mt-4">Message</p>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Enter your message"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows={4}
+          />
 
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate(`/inquiries/edit/${id}`)} // Navigate to edit page
-            className="w-1/2 py-3 px-4 bg-green-500 text-white font-bold rounded-lg shadow-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200 ml-4"
+            className="mt-5 mb-4 w-full py-3 px-4 bg-[#2563eb] text-white font-bold rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            type="submit"
           >
-            <Edit size={20} className="inline-block mr-2" />
-            Edit
+            <Save size={20} className="inline-block mr-2" />
+            Save Changes
           </motion.button>
-        </div>
+        </form>
       </div>
     </motion.div>
   );
 };
 
-export default ViewOneInquiry;
+export default EditInquiry;

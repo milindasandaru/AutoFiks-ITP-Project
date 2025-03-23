@@ -54,7 +54,7 @@ const AddInquiry = () => {
         message,
         status: type === "complaint" ? status : undefined, // Only include status for complaints
       });
-  
+      
       if (response.data.success) {
         // Redirect to the view page of the newly created inquiry
         navigate(`/inquiries/view/${response.data.inquiry._id}`);
