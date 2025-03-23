@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Loader, Trash, Edit, AlertCircle } from "lucide-react";
 import axios from "axios";
 import logo from "../../assets/images/AMS_logo2.png";
+import { Link } from "react-router-dom";
+import { AiOutlineEdit } from 'react-icons/ai';
 
 const ManageInquiry = () => {
   const [inquiries, setInquiries] = useState([]);
@@ -143,6 +145,9 @@ const ManageInquiry = () => {
                     >
                       <Trash size={20} />
                     </motion.button>
+
+                    <Link to={`/inquries/edit/${inquiry._id}`} title="Edit">
+                       <AiOutlineEdit className="text-xl text-yellow-600 hover:text-yellow-800 transition-colors" /> </Link>
                   </div>
                 </div>
                 <p className="mt-2 text-gray-700">{inquiry.message}</p>
