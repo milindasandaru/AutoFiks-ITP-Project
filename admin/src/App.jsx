@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import FloatingShape from "./components/FloatingShape";
 import Layout from "./components/Layout";
 import AdminDashboard from "./pages/AdminDashboard";
 import ServiceTicket from "./pages/Service shedule/ServiceTicket";
@@ -16,24 +17,48 @@ import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="service_ticket" element={<ServiceTicket />} />
-          <Route path="employee" element={<Employee />} />
-          <Route path="customer" element={<Customer />} />
-          <Route path="billing" element={<Billing />} />
-          <Route path="spare_parts" element={<SpareParts />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="setting" element={<Setting />} />
-          <Route path="createEmployee" element={<CreateEmployee />} />
-          <Route path="updateEmployee/:id" element={<UpdateEmployee />} />
-        </Route>
-      </Routes>
-      <Toaster />
-    </BrowserRouter>
+    <div className="bg-[#f3f4f6]">
+      <FloatingShape
+        color="bg-[#2563eb]"
+        size="w-64 h-64"
+        top="-5%"
+        left="10%"
+        delay={0}
+      />
+      <FloatingShape
+        color="bg-[#2563eb]"
+        size="w-48 h-48"
+        top="70%"
+        left="80%"
+        delay={5}
+      />
+      <FloatingShape
+        color="bg-[#2563eb]"
+        size="w-32 h-32"
+        top="40%"
+        left="-10%"
+        delay={2}
+      />
+
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="service_ticket" element={<ServiceTicket />} />
+            <Route path="employee" element={<Employee />} />
+            <Route path="customer" element={<Customer />} />
+            <Route path="billing" element={<Billing />} />
+            <Route path="spare_parts" element={<SpareParts />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="setting" element={<Setting />} />
+            <Route path="createEmployee" element={<CreateEmployee />} />
+            <Route path="updateEmployee/:id" element={<UpdateEmployee />} />
+          </Route>
+        </Routes>
+        <Toaster />
+      </BrowserRouter>
+    </div>
   );
 }
 
