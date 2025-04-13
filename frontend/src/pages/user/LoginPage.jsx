@@ -15,12 +15,25 @@ import {
 const LoginPage = () => {
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
-  const { error, isLoading, login } = useAuthStore();
+  const { error, isLoading, login, anomaly } = useAuthStore();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    await login(mail, password, navigate);
+    const result = await login(mail, password);
+
+    if (result?.anomaly) {
+      setTimeout(() => {
+        navigate("/verify-email");
+      }, 2000);
+      return;
+    }
+
+    if (result?.role === "user") {
+      navigate("/overview");
+    } else if (result?.role === "employee") {
+      navigate("/employee-dashboard");
+    }
   };
 
   return (
@@ -37,6 +50,12 @@ const LoginPage = () => {
         <h2 className="text-2xl font-medium font-poppins h-[50px] text-center bg-black text-transparent bg-clip-text">
           Log in to your account
         </h2>
+        {anomaly && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            ⚠️ Unusual login detected. Please verify your email before
+            proceeding.
+          </div>
+        )}
         <form onSubmit={handleLogin}>
           <p className="text-[#a3a3a3]">Email</p>
           <Input

@@ -33,7 +33,9 @@ export const useAdminUserStore = create((set) => ({
       }));
       toast.success("User deleted successfully");
     } catch (error) {
-      set({ error: error.message });
+      const errorMsg = error.response?.data?.message || "Error deleting user";
+      toast.error(errorMsg);
+      set({ error: errorMsg });
     } finally {
       set({ isLoading: false });
     }
