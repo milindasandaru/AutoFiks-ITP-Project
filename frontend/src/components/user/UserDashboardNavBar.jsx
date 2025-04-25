@@ -7,12 +7,14 @@ import {
   faTicketAlt,
   faTruckMoving,
   faWallet,
-  faCogs,
   faUser,
   faLifeRing,
   faHome,
   faBell,
+  faCogs,
   faPhoneSquare,
+  faShoppingCart,
+  faStoreAlt 
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../assets/images/AMS_logo2.png";
 
@@ -22,17 +24,22 @@ const Sidebar = () => {
 
   const menuItems = [
     { name: "Overview", path: "/overview", icon: faHome },
-    { name: "Spare Parts Store", path: "/spare-parts", icon: faCogs },
-    { name: "Shedule a Service", path: "/service-ticket", icon: faTicketAlt },
-    { name: "Live Tracking", path: "/tracking", icon: faTruckMoving },
-    { name: "Payment", path: "/payment", icon: faWallet },
-    { name: "Notifications", path: "/notifications", icon: faBell },
-    { name: "Contact us", path: "/inquiries/manage", icon: faPhoneSquare },
+    { name: "Store", path: "/overview/spare-parts", icon: faCogs },
+    { name: "Cart", path: "/overview/cart", icon: faShoppingCart },
+    {
+      name: "Shedule a Service",
+      path: "/overview/service-ticket",
+      icon: faTicketAlt,
+    },
+    { name: "Live Tracking", path: "/overview/tracking", icon: faTruckMoving },
+    { name: "Payment", path: "/overview/payment", icon: faWallet },
+    
+    { name: "Contact us", path: "/overview/inquiries/manage", icon: faPhoneSquare },
   ];
 
   const settingItems = [
-    { name: "Profile", path: "/user-profile", icon: faUser },
-    { name: "Help Center", path: "/help-center", icon: faLifeRing },
+    { name: "Profile", path: "/overview/user-profile", icon: faUser },
+    { name: "Help Center", path: "/overview/help-center", icon: faLifeRing },
   ];
 
   return (
