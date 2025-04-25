@@ -18,6 +18,9 @@ import Leaving from "./pages/employee/Leaving";
 import Earning from "./pages/employee/Earning";
 import Profile from "./pages/employee/Profile";
 import HelpCenter from "./pages/employee/HelpCenter";
+import CartPage from "./pages/user/CartPage";
+import StorePage from "./pages/user/StorePage";
+import SparePartViewPage from "./pages/user/SparePartViewPage";
 
 //protected routees that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -92,6 +95,25 @@ function App() {
           element={
             <ProtectedRoute>
               <OverviewPage />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/store"
+          element={
+            <ProtectedRoute>
+              <StorePage />
+            </ProtectedRoute>
+          }
+        ></Route>
+        <Route path="/spare-part/:id" element={<SparePartViewPage />} />
+
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <CartPage />
             </ProtectedRoute>
           }
         ></Route>

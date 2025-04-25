@@ -7,12 +7,13 @@ import {
   faTicketAlt,
   faTruckMoving,
   faWallet,
-  faCogs,
   faUser,
   faLifeRing,
   faHome,
   faBell,
   faPhoneSquare,
+  faShoppingCart,
+  faStoreAlt 
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../assets/images/AMS_logo2.png";
 
@@ -21,8 +22,9 @@ const Sidebar = () => {
   const location = useLocation(); // Get current route
 
   const menuItems = [
-    { name: "Overview", path: "/overview", icon: faHome },
-    { name: "Spare Parts Store", path: "/spare-parts", icon: faCogs },
+    { name: "Overview", path: "/", icon: faHome },
+    { name: "Store", path: "/store", icon: faStoreAlt },
+    { name: "Your Cart", path: "/cart", icon: faShoppingCart },
     { name: "Shedule a Service", path: "/service-ticket", icon: faTicketAlt },
     { name: "Live Tracking", path: "/tracking", icon: faTruckMoving },
     { name: "Payment", path: "/payment", icon: faWallet },

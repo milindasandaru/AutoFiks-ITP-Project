@@ -11,6 +11,9 @@ export const brevoTransporter = nodemailer.createTransport({
     user: process.env.BREVO_SMTP_USER,
     pass: process.env.BREVO_SMTP_PASS,
   },
+  tls: {
+    rejectUnauthorized: false // Allow self-signed certificates
+  },
 });
 
 export const sender = {

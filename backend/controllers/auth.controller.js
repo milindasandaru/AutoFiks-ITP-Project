@@ -125,6 +125,7 @@ export const verifyEmail = async (req, res) => {
 };
 
 export const login = async (req, res) => {
+  console.log("Received body:", req.body);
   const { mail, password } = req.body;
   try {
     let user = await User.findOne({ mail });
