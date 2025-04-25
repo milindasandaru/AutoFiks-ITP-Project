@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import FloatingShape from "./components/FloatingShape";
 import Layout from "./components/Layout";
@@ -6,7 +7,7 @@ import ServiceTicket from "./pages/Service shedule/ServiceTicket";
 import Employee from "./pages/Employee/Employee";
 import Customer from "./pages/Customer";
 import Billing from "./pages/Billing";
-import SpareParts from "./pages/Spare Parts/SpareParts";
+import SpareParts from "./pages/SpareParts/SpareParts";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
 import Setting from "./pages/Setting";
@@ -14,6 +15,7 @@ import CreateEmployee from "./pages/Employee/CreateEmployee";
 import UpdateEmployee from "./pages/Employee/UpdateEmployee";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
+
 
 function App() {
   return (

@@ -18,6 +18,9 @@ import Leaving from "./pages/employee/Leaving";
 import Earning from "./pages/employee/Earning";
 import Profile from "./pages/employee/Profile";
 import HelpCenter from "./pages/employee/HelpCenter";
+import CartPage from "./pages/user/CartPage";
+import StorePage from "./pages/user/StorePage";
+import SparePartViewPage from "./pages/user/SparePartViewPage";
 import UserLayout from "./components/user/UserLayout";
 
 //protected routees that require authentication
@@ -94,6 +97,8 @@ function App() {
         {/*Base path*/}
         <Route path="/" element={<Navigate to="/overview" replace />} />
 
+        
+
         {/*Authentication sections*/}
         <Route
           path="/signup"
@@ -141,8 +146,10 @@ function App() {
           }
         >
           <Route index element={<OverviewPage />} />
-          {/*<Route path="spare-parts" element={<SparePartsPage />} />
-          <Route path="service-ticket" element={<ServiceTicketPage />} />
+          <Route path="spare-parts" element={<StorePage />} />
+          <Route path="cart" element={<CartPage />} />
+          
+          {/*<Route path="service-ticket" element={<ServiceTicketPage />} />
           <Route path="tracking" element={<LiveTrackingPage />} />
           <Route path="payment" element={<PaymentPage />} />
           <Route path="notifications" element={<NotificationsPage />} />
