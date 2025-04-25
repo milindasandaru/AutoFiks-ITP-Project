@@ -12,21 +12,22 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "geoip-lite": "^1.4.10",
     "jsonwebtoken": "^9.0.2",
     "mailtrap": "^3.4.0",
     "mongodb": "^6.12.0",
-    "mongoose": "^8.9.4",
-    "nodemailer": "^6.10.0",
-    "openai": "^4.87.3"
+    "mongoose": "^8.13.3",
+    "nodemailer": "^6.10.1",
+    "openai": "^4.96.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.10"
   }
 }
