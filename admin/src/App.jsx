@@ -6,12 +6,14 @@ import ServiceTicket from "./pages/Service shedule/ServiceTicket";
 import Employee from "./pages/Employee/Employee";
 import Customer from "./pages/Customer";
 import Billing from "./pages/Billing";
-import SpareParts from "./pages/Spare Parts/SpareParts";
+import SpareParts from "./pages/SpareParts/SpareParts";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
 import Setting from "./pages/Setting";
 import CreateEmployee from "./pages/Employee/CreateEmployee";
 import UpdateEmployee from "./pages/Employee/UpdateEmployee";
+import CreateNewSparePart from "./pages/SpareParts/CreateNewSparePart";
+import UpdateSparePart from "./pages/SpareParts/UpdateSparePart";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
 
@@ -53,6 +55,14 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="setting" element={<Setting />} />
             <Route path="createEmployee" element={<CreateEmployee />} />
+            <Route
+              path="create-new-sparepart"
+              element={<CreateNewSparePart />}
+            />
+            <Route
+              path="update-sparepart/:sparePartId"
+              element={<UpdateSparePart />}
+            />
             <Route path="updateEmployee/:id" element={<UpdateEmployee />} />
           </Route>
         </Routes>

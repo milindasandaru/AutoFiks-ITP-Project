@@ -9,3 +9,13 @@
 body {
   font-family: "Poppins", sans-serif;
 }
+
+/* hide-scroll.css */
+.hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+.hide-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
