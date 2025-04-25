@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Sidebar from "../../components/user/UserDashboardNavBar";
+
 import axios from "axios";
 import AddToCartButton from "../../components/user/AddToCartButton";
 import { useUserStore } from "../../store/userStore.js";
@@ -36,8 +36,7 @@ const StorePage = () => {
 
   return (
     <div className="flex">
-      <Sidebar />
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 bg-white shadow-md rounded-lg w-full h-max">
         <h1 className="text-3xl font-semibold">Spare Parts Store</h1>
         <p className="text-gray-600 mt-2">
           Welcome to the Spare Parts Store. Here you can find a wide range of
@@ -80,7 +79,7 @@ const StorePage = () => {
                 key={part._id}
                 className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
-                <Link to={`/spare-part/${part._id}`}>
+                <Link to={`/overview/spare-part/${part._id}`}>
                   <img
                     src={
                       part.image

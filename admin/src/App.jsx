@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import FloatingShape from "./components/FloatingShape";
 import Layout from "./components/Layout";
@@ -13,9 +12,10 @@ import Profile from "./pages/Profile";
 import Setting from "./pages/Setting";
 import CreateEmployee from "./pages/Employee/CreateEmployee";
 import UpdateEmployee from "./pages/Employee/UpdateEmployee";
+import CreateNewSparePart from "./pages/SpareParts/CreateNewSparePart";
+import UpdateSparePart from "./pages/SpareParts/UpdateSparePart";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
-
 
 function App() {
   return (
@@ -55,6 +55,14 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="setting" element={<Setting />} />
             <Route path="createEmployee" element={<CreateEmployee />} />
+            <Route
+              path="create-new-sparepart"
+              element={<CreateNewSparePart />}
+            />
+            <Route
+              path="update-sparepart/:sparePartId"
+              element={<UpdateSparePart />}
+            />
             <Route path="updateEmployee/:id" element={<UpdateEmployee />} />
           </Route>
         </Routes>

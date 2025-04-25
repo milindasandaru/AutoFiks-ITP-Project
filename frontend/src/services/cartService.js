@@ -8,7 +8,7 @@ const config = {
 
 //  Add item to cart (or increase quantity)
 export const addToCart = (userId, sparePartId, quantity = 1) => {
-    console.log(userId, sparePartId, quantity);
+  console.log(userId, sparePartId, quantity);
   return axios.post(
     `${BASE_URL}/add`,
     {
@@ -30,7 +30,6 @@ export const removeFromCart = (sparePartId) => {
   return axios.put(
     `${BASE_URL}/remove`,
     {
-      
       sparePartId,
     },
     config
@@ -47,7 +46,6 @@ export const updateCartItemQuantity = (sparePartId, newQuantity) => {
   return axios.put(
     `${BASE_URL}/update-quantity`,
     {
-      
       sparePartId,
       quantity: newQuantity,
     },
