@@ -97,8 +97,6 @@ function App() {
         {/*Base path*/}
         <Route path="/" element={<Navigate to="/overview" replace />} />
 
-        
-
         {/*Authentication sections*/}
         <Route
           path="/signup"
@@ -147,8 +145,9 @@ function App() {
         >
           <Route index element={<OverviewPage />} />
           <Route path="spare-parts" element={<StorePage />} />
+          <Route path="spare-part/:id" element={<SparePartViewPage />} />
           <Route path="cart" element={<CartPage />} />
-          
+
           {/*<Route path="service-ticket" element={<ServiceTicketPage />} />
           <Route path="tracking" element={<LiveTrackingPage />} />
           <Route path="payment" element={<PaymentPage />} />

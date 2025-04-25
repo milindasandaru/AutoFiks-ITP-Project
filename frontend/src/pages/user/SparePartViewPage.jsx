@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import Sidebar from "../../components/user/UserDashboardNavBar";
+
 import AddToCartButton from "../../components/user/AddToCartButton";
 import { useUserStore } from "../../store/userStore";
 import { IoCartOutline } from "react-icons/io5"; // Import IoCartOutline;
@@ -29,7 +29,6 @@ const SparePartViewPage = () => {
     fetchRelatedParts();
   }, [id]);
 
-
   useEffect(() => {
     const fetchSparePart = async () => {
       try {
@@ -52,8 +51,7 @@ const SparePartViewPage = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
-      <div className="flex-1 p-8">
+      <div className="flex-1 p-6 bg-white shadow-md rounded-lg w-full h-max">
         <h1 className="text-3xl font-bold mb-1">Spare Part Details</h1>
         <p className="text-gray-600">
           Here you can view the details of a specific spare part.

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../../components/user/UserDashboardNavBar";
+
 import {
   getCart,
   removeFromCart,
@@ -14,8 +14,6 @@ const CartPage = () => {
   const [removeLoadingItemId, setRemoveLoadingItemId] = useState(null);
   const [error, setError] = useState("");
   const [loadingItemId, setLoadingItemId] = useState(null);
-
-  
 
   useEffect(() => {
     fetchCart();
@@ -35,7 +33,7 @@ const CartPage = () => {
   const handleRemove = async (sparePartId) => {
     try {
       setRemoveLoadingItemId(true);
-      const response = await removeFromCart( sparePartId);
+      const response = await removeFromCart(sparePartId);
       if (response.status === 200) {
         alert("Item removed from cart");
         fetchCart();
@@ -54,10 +52,7 @@ const CartPage = () => {
     if (quantity < 1) return;
     try {
       setLoadingItemId(sparePartId);
-      const response = await updateCartItemQuantity(
-        sparePartId,
-        quantity
-      );
+      const response = await updateCartItemQuantity(sparePartId, quantity);
       if (response.status !== 200) {
         alert(response.data.message);
       }
@@ -79,8 +74,7 @@ const CartPage = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 bg-white shadow-md rounded-lg w-full h-max">
         <h1 className="text-3xl font-semibold mb-4 text-center">Your Cart</h1>
 
         {loading ? (
@@ -114,7 +108,7 @@ const CartPage = () => {
                 key={item._id}
                 className="flex items-center gap-4 bg-white p-4 rounded-lg shadow"
               >
-                <Link to={`/spare-part/${item.sparePart._id}`}>
+                <Link to={`/overview/spare-part/${item.sparePart._id}`}>
                   <img
                     src={`http://localhost:8070${item.sparePart.image}`}
                     alt={item.sparePart.name}
