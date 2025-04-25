@@ -2,6 +2,8 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.route.js";
+import appointmentRoutes from "./routes/appointmentRoutes.js";
+import bookingRoutes from "./routes/appointmentRoutes.js"
 import userRoutes from "./routes/user.route.js";
 import userAIRoutes from "./routes/userai.route.js";
 import employeeRoutes from "./routes/employeeRoutes.js";
@@ -35,6 +37,9 @@ app.use("/api/employees", employeeRoutes);
 app.use("/api/sparepart", sparePartRoutes);
 app.use("/api/cart", cartRouter);
 app.use("/api/admin/user", adminUserRoutes);
+app.use("/api/appointments", appointmentRoutes);
+app.use('/api/bookings', bookingRoutes);
+
 
 app.listen(8070, () => {
   connectDB();

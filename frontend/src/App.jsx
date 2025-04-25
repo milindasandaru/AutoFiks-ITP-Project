@@ -22,12 +22,14 @@ import CartPage from "./pages/user/CartPage";
 import StorePage from "./pages/user/StorePage";
 import SparePartViewPage from "./pages/user/SparePartViewPage";
 import UserLayout from "./components/user/UserLayout";
+import ServiceSchedule from "./pages/user/Appointmentbookingform";
+import BookingsList from "./pages/user/Bookingslist"; // ✅ FIXED: Capitalized
 
-//protected routees that require authentication
+// Protected route that requires authentication
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
 
-  console.log("ProtectedRoute state:", isAuthenticated, user); // Debugging
+  console.log("ProtectedRoute state:", isAuthenticated, user);
 
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;
@@ -40,13 +42,13 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-//Redirect authenticated users into home page
+// Redirect authenticated users to appropriate home page
 const RedirectAuthenticatedUser = ({ children }) => {
   const { isAuthenticated, user, role } = useAuthStore();
 
-  if (isAuthenticated && user.isVerified && role === "user") {
+  if (isAuthenticated && user?.isVerified && role === "user") {
     return <Navigate to="/overview" replace />;
-  } else if (isAuthenticated && user.isVerified && role === "employee") {
+  } else if (isAuthenticated && user?.isVerified && role === "employee") {
     return <Navigate to="/employee-dashboard" replace />;
   }
 
@@ -54,8 +56,7 @@ const RedirectAuthenticatedUser = ({ children }) => {
 };
 
 function App() {
-  const { checkAuth, isAuthenticated, user, role, isCheckingAuth } =
-    useAuthStore();
+  const { checkAuth, isAuthenticated, user, role, isCheckingAuth } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -71,41 +72,24 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#f3f4f6] flex items-center justify-center relative overflow-hidden">
-      <FloatingShape
-        color="bg-[#2563eb]"
-        size="w-64 h-64"
-        top="-5%"
-        left="10%"
-        delay={0}
-      />
-      <FloatingShape
-        color="bg-[#2563eb]"
-        size="w-48 h-48"
-        top="70%"
-        left="80%"
-        delay={5}
-      />
-      <FloatingShape
-        color="bg-[#2563eb]"
-        size="w-32 h-32"
-        top="40%"
-        left="-10%"
-        delay={2}
-      />
+      {/* Floating shapes */}
+      <FloatingShape color="bg-[#2563eb]" size="w-64 h-64" top="-5%" left="10%" delay={0} />
+      <FloatingShape color="bg-[#2563eb]" size="w-48 h-48" top="70%" left="80%" delay={5} />
+      <FloatingShape color="bg-[#2563eb]" size="w-32 h-32" top="40%" left="-10%" delay={2} />
 
       <Routes>
-        {/*Base path*/}
+        {/* Redirect base path */}
         <Route path="/" element={<Navigate to="/overview" replace />} />
 
-        {/*Authentication sections*/}
+        {/* Auth Routes */}
         <Route
           path="/signup"
           element={
             <RedirectAuthenticatedUser>
-              <SignUpPage></SignUpPage>
+              <SignUpPage />
             </RedirectAuthenticatedUser>
           }
-        ></Route>
+        />
         <Route
           path="/login"
           element={
@@ -113,9 +97,8 @@ function App() {
               <LoginPage />
             </RedirectAuthenticatedUser>
           }
-        ></Route>
+        />
         <Route path="/verify-email" element={<EmailVerificationPage />} />
-
         <Route
           path="/forgot-password"
           element={
@@ -124,7 +107,6 @@ function App() {
             </RedirectAuthenticatedUser>
           }
         />
-
         <Route
           path="/resetpassword/:token"
           element={
@@ -134,7 +116,7 @@ function App() {
           }
         />
 
-        {/* User Navigation */}
+        {/* User Routes */}
         <Route
           path="/overview"
           element={
@@ -147,18 +129,22 @@ function App() {
           <Route path="spare-parts" element={<StorePage />} />
           <Route path="spare-part/:id" element={<SparePartViewPage />} />
           <Route path="cart" element={<CartPage />} />
-
-          {/*<Route path="service-ticket" element={<ServiceTicketPage />} />
-          <Route path="tracking" element={<LiveTrackingPage />} />
-          <Route path="payment" element={<PaymentPage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="contact-us" element={<ContactUsPage />} />*/}
+          <Route path="service-ticket" element={<ServiceSchedule />} />
+          <Route path="booking-list" element={<BookingsList />} />
           <Route path="user-profile" element={<UserProfilePage />} />
           <Route path="edit-user-profile" element={<EditUserProfilePage />} />
-          {/*<Route path="help-center" element={<HelpCenterPage />} />*/}
+
+          {/* Optional future routes */}
+          {/*
+            <Route path="tracking" element={<LiveTrackingPage />} />
+            <Route path="payment" element={<PaymentPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="contact-us" element={<ContactUsPage />} />
+            <Route path="help-center" element={<HelpCenterPage />} />
+          */}
         </Route>
 
-        {/*Employee navigationa*/}
+        {/* Employee Routes */}
         <Route path="/employee-dashboard" element={<Layout />}>
           <Route index element={<EmployeeDashboard />} />
           <Route path="workSchedule" element={<WorkSchedule />} />
@@ -168,9 +154,10 @@ function App() {
           <Route path="helpcenter" element={<HelpCenter />} />
         </Route>
 
-        {/* For invalid routes*/}
+        {/* Catch-all fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+
       <Toaster />
     </div>
   );
