@@ -5,6 +5,7 @@ import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import userAIRoutes from "./routes/userai.route.js";
 import employeeRoutes from "./routes/employeeRoutes.js";
+import adminUserRoutes from "./routes/adminuser.route.js";
 import cors from "cors";
 import { connectDB } from "./config/connectDB.js";
 
@@ -24,6 +25,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/ai", userAIRoutes);
 app.use("/api/employees", employeeRoutes);
+app.use("/api/admin/user", adminUserRoutes);
 
 app.listen(8070, () => {
   connectDB();

@@ -11,6 +11,7 @@ export const useAuthStore = create((set, get) => ({
   isLoading: false,
   isCheckingAuth: true,
   role: null,
+  anomaly: false,
 
   signup: async (mail, password, name, username, phone, NIC, address) => {
     set({ isLoading: true, error: null });
@@ -84,7 +85,7 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  login: async (mail, password, navigate) => {
+  login: async (mail, password) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(`${API_URL}/login`, {
@@ -92,6 +93,18 @@ export const useAuthStore = create((set, get) => ({
         password,
       });
       console.log("Login API Response: ", response.data);
+
+      if (response.data.anomaly === true) {
+        set({
+          isAuthenticated: false,
+          user: null,
+          error: null,
+          anomaly: true,
+          isLoading: false,
+        });
+
+        return { anomaly: true }; // return a flag to let the component handle redirect
+      }
 
       set((state) => ({
         ...state,
@@ -104,11 +117,7 @@ export const useAuthStore = create((set, get) => ({
 
       console.log("Updated auth state: ", get());
 
-      if (response.data.role == "user") {
-        navigate("/overview");
-      } else if (response.data.role == "employee") {
-        navigate("/employee-dashboard");
-      }
+      return { anomaly: false, role: response.data.role };
     } catch (error) {
       set({
         error: error.response?.data?.message || "Error login in",
