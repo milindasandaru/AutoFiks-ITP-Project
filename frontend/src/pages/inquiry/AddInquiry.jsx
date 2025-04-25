@@ -72,7 +72,7 @@ const AddInquiry = () => {
       );
 
       if (response.data.success) {
-        navigate("/inquiries/manage", { replace: true });
+        navigate("/overview/inquiries/manage", { replace: true });
       }
     } catch (error) {
       console.error("Error submitting inquiry:", error);

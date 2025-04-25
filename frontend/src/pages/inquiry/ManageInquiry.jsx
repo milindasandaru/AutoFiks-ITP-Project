@@ -4,6 +4,7 @@ import { Loader, Trash, Edit, Plus } from "lucide-react";
 import axios from "axios";
 import logo from "../../assets/images/AMS_logo2.png";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const ManageInquiry = () => {
   const [inquiries, setInquiries] = useState([]);
@@ -38,6 +39,7 @@ const ManageInquiry = () => {
         if (response.data.success) {
           setInquiries(inquiries.filter((inquiry) => inquiry._id !== id));
         }
+        toast.success("Succesfully deleted!")
       } catch (error) {
         console.error("Error deleting inquiry:", error);
       }
@@ -125,7 +127,7 @@ const ManageInquiry = () => {
                         )}
                       </div>
                       <div className="flex space-x-2">
-                        <Link to={`/inquiries/edit/${inquiry._id}`}>
+                        <Link to={`/overview/inquiries/edit/${inquiry._id}`}>
                           <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
@@ -159,7 +161,7 @@ const ManageInquiry = () => {
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        onClick={() => navigate("/inquiries/add")}
+        onClick={() => navigate("/overview/inquiries/add")}
         className="fixed bottom-8 right-8 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors z-50"
       >
         <Plus size={24} />

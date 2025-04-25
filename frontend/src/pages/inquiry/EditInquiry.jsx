@@ -65,7 +65,7 @@ const EditInquiry = () => {
 
       if (response.data.success) {
         toast.success("Inquiry updated successfully!");
-        navigate(`/inquiries/manage`);
+        navigate(`/overview/inquiries/manage`);
       } else {
         console.error("Update failed:", response.data.message);
       }
