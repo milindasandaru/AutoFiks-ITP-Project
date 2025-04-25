@@ -2,6 +2,8 @@ import { User } from "../models/user.model.js";
 
 export const getProfile = async (req, res) => {
   try {
+    const userid = req.userID;
+    console.log(userid);
     const user = await User.findById(req.userID).select("-password");
 
     if (!user) {

@@ -7,6 +7,7 @@ import userAIRoutes from "./routes/userai.route.js";
 import employeeRoutes from "./routes/employeeRoutes.js";
 import sparePartRoutes from "./routes/sparepart.route.js";
 import cartRouter from "./routes/cart.route.js";
+import adminUserRoutes from "./routes/adminuser.route.js";
 import cors from "cors";
 import { connectDB } from "./config/connectDB.js";
 import path from "path";
@@ -33,6 +34,7 @@ app.use("/api/ai", userAIRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/sparepart", sparePartRoutes);
 app.use("/api/cart", cartRouter);
+app.use("/api/admin/user", adminUserRoutes);
 
 app.listen(8070, () => {
   connectDB();

@@ -21,16 +21,16 @@ export const addToCart = (userId, sparePartId, quantity = 1) => {
 };
 
 //  Get user's cart
-export const getCart = (userId) => {
-  return axios.get(`${BASE_URL}/${userId}`, config);
+export const getCart = () => {
+  return axios.get(`${BASE_URL}/my-cart`, config);
 };
 
 // ✅ Remove specific item from cart
-export const removeFromCart = (userId, sparePartId) => {
+export const removeFromCart = (sparePartId) => {
   return axios.put(
     `${BASE_URL}/remove`,
     {
-      userId,
+      
       sparePartId,
     },
     config
@@ -38,16 +38,16 @@ export const removeFromCart = (userId, sparePartId) => {
 };
 
 // ✅ Clear entire cart
-export const clearCart = (userId) => {
-  return axios.delete(`${BASE_URL}/clear/${userId}`, config);
+export const clearCart = () => {
+  return axios.delete(`${BASE_URL}/clear`, config);
 };
 
 // ✅ Update quantity of an item in cart (optional if not using add logic repeatedly)
-export const updateCartItemQuantity = (userId, sparePartId, newQuantity) => {
+export const updateCartItemQuantity = (sparePartId, newQuantity) => {
   return axios.put(
     `${BASE_URL}/update-quantity`,
     {
-      userId,
+      
       sparePartId,
       quantity: newQuantity,
     },

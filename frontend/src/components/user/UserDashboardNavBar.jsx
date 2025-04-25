@@ -11,6 +11,7 @@ import {
   faLifeRing,
   faHome,
   faBell,
+  faCogs,
   faPhoneSquare,
   faShoppingCart,
   faStoreAlt 
@@ -22,19 +23,23 @@ const Sidebar = () => {
   const location = useLocation(); // Get current route
 
   const menuItems = [
-    { name: "Overview", path: "/", icon: faHome },
-    { name: "Store", path: "/store", icon: faStoreAlt },
-    { name: "Your Cart", path: "/cart", icon: faShoppingCart },
-    { name: "Shedule a Service", path: "/service-ticket", icon: faTicketAlt },
-    { name: "Live Tracking", path: "/tracking", icon: faTruckMoving },
-    { name: "Payment", path: "/payment", icon: faWallet },
-    { name: "Notifications", path: "/notifications", icon: faBell },
-    { name: "Contact us", path: "/contact-us", icon: faPhoneSquare },
+    { name: "Overview", path: "/overview", icon: faHome },
+    { name: "Store", path: "/overview/spare-parts", icon: faCogs },
+    { name: "Cart", path: "/overview/cart", icon: faShoppingCart },
+    {
+      name: "Shedule a Service",
+      path: "/overview/service-ticket",
+      icon: faTicketAlt,
+    },
+    { name: "Live Tracking", path: "/overview/tracking", icon: faTruckMoving },
+    { name: "Payment", path: "/overview/payment", icon: faWallet },
+    
+    { name: "Contact us", path: "/overview/contact-us", icon: faPhoneSquare },
   ];
 
   const settingItems = [
-    { name: "Profile", path: "/user-profile", icon: faUser },
-    { name: "Help Center", path: "/help-center", icon: faLifeRing },
+    { name: "Profile", path: "/overview/user-profile", icon: faUser },
+    { name: "Help Center", path: "/overview/help-center", icon: faLifeRing },
   ];
 
   return (

@@ -15,7 +15,7 @@ const CartPage = () => {
   const [error, setError] = useState("");
   const [loadingItemId, setLoadingItemId] = useState(null);
 
-  const userId = "67dd2a3c442028edfc53a7bb"; // or useAuth().user._id
+  
 
   useEffect(() => {
     fetchCart();
@@ -23,8 +23,8 @@ const CartPage = () => {
 
   const fetchCart = async () => {
     try {
-      const { data } = await getCart(userId);
-      setCart(data);
+      const { data } = await getCart();
+      setCart(data.cart);
     } catch (error) {
       setError("Failed to load cart", error);
     } finally {
@@ -35,7 +35,7 @@ const CartPage = () => {
   const handleRemove = async (sparePartId) => {
     try {
       setRemoveLoadingItemId(true);
-      const response = await removeFromCart(userId, sparePartId);
+      const response = await removeFromCart( sparePartId);
       if (response.status === 200) {
         alert("Item removed from cart");
         fetchCart();
@@ -55,7 +55,6 @@ const CartPage = () => {
     try {
       setLoadingItemId(sparePartId);
       const response = await updateCartItemQuantity(
-        userId,
         sparePartId,
         quantity
       );

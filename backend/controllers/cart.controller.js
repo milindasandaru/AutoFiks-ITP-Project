@@ -2,7 +2,8 @@ import Cart from "../models/cart.model.js";
 import SparePart from "../models/sparepart.model.js";
 
 export const addToCart = async (req, res) => {
-  const { userId, sparePartId, quantity } = req.body;
+  const { sparePartId, quantity } = req.body;
+  const userId = req.userID;
 
   try {
     const sparePart = await SparePart.findById(sparePartId);
@@ -50,29 +51,58 @@ export const addToCart = async (req, res) => {
     }
 
     await cart.save();
-    res.status(200).json({ message: "Item added to cart successfully", cart });
+    
+    // Populate the spare part details before sending response
+    const populatedCart = await Cart.findById(cart._id).populate('items.sparePart');
+    res.status(200).json({ 
+      success: true,
+      message: "Item added to cart successfully", 
+      cart: populatedCart 
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Error in addToCart:", err);
+    res.status(500).json({ success: false, message: err.message });
   }
 };
-
 
 // Get user's cart
 export const getCart = async (req, res) => {
   try {
-    const cart = await Cart.findOne({ userId: req.params.userId }).populate(
+    const cart = await Cart.findOne({ userId: req.userID }).populate(
       "items.sparePart"
     );
-    if (!cart) return res.status(404).json({ message: "Cart not found" });
-    res.status(200).json(cart);
+    console.log(req.userID);
+    
+    if (!cart) {
+      // Return empty cart structure if no cart exists
+      return res.status(200).json({
+        success: true,
+        cart: {
+          userId: req.userID,
+          items: [],
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      });
+    }
+    
+    res.status(200).json({
+      success: true,
+      cart
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Error in getCart:", err);
+    res.status(500).json({ 
+      success: false, 
+      message: err.message 
+    });
   }
 };
 
 // Remove an item from the cart
 export const removeFromCart = async (req, res) => {
-  const { userId, sparePartId } = req.body;
+  const { sparePartId } = req.body;
+  const userId = req.userID;
 
   try {
     const cart = await Cart.findOne({ userId });
@@ -92,18 +122,18 @@ export const removeFromCart = async (req, res) => {
 // Clear cart
 export const clearCart = async (req, res) => {
   try {
-    const cart = await Cart.findOneAndDelete({ userId: req.params.userId });
+    const cart = await Cart.findOneAndDelete({ userId: req.userID });
     res.status(200).json({ message: "Cart cleared" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-
 export const updateCartItemQuantity = async (req, res) => {
-  const { userId, sparePartId, quantity } = req.body;
+  const { sparePartId, quantity } = req.body;
+  const userId = req.userID;
 
-  if (!userId || !sparePartId || typeof quantity !== "number") {
+  if (!sparePartId || typeof quantity !== "number") {
     return res.status(400).json({ message: "Missing or invalid fields" });
   }
 

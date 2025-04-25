@@ -9,6 +9,8 @@ import {
 } from "../mails/emails.js";
 import { User } from "../models/user.model.js";
 import Employee from "../models/Employee.js";
+import geoip from "geoip-lite";
+import { LoginLog } from "../models/loginlog.model.js";
 
 export const signup = async (req, res) => {
   console.log("Received body:", req.body);
@@ -54,6 +56,25 @@ export const signup = async (req, res) => {
     });
 
     await user.save();
+
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    if (ip === "::1" || ip === "127.0.0.1") {
+      ip = "8.8.8.8"; // only for local dev testing
+    }
+
+    const userAgent = req.headers["user-agent"];
+
+    const geo = geoip.lookup(ip);
+    const location = geo ? `${geo.city}, ${geo.country}` : "Unknown";
+
+    await LoginLog.create({
+      userId: user._id,
+      role: "User",
+      ipAddress: ip,
+      userAgent,
+      location,
+      isAnomalous: false,
+    });
 
     //jwt token verification part
     generateTokenAndSetCookie(res, user._id);
@@ -148,20 +169,21 @@ export const login = async (req, res) => {
 
       generateTokenAndSetCookie(res, user._id);
 
-      const newVerificationToken = Math.floor(
-        100000 + Math.random() * 900000
-      ).toString();
+      if (user.isVerified == false) {
+        const newVerificationToken = Math.floor(
+          100000 + Math.random() * 900000
+        ).toString();
 
-      console.log(newVerificationToken);
+        console.log(newVerificationToken);
 
-      user.verificationToken = newVerificationToken;
+        user.verificationToken = newVerificationToken;
 
-      user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+        user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
 
-      await user.save();
+        await user.save();
 
-      await sendVerificationEmail(user.mail, newVerificationToken);
-
+        await sendVerificationEmail(user.mail, newVerificationToken);
+      }
       return res.status(200).json({
         success: true,
         message: "Employee Logged in successfully",
@@ -186,6 +208,51 @@ export const login = async (req, res) => {
     generateTokenAndSetCookie(res, user._id);
 
     user.lastLogin = new Date();
+
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    const userAgent = req.headers["user-agent"];
+    const geo = geoip.lookup(ip);
+    const location = geo ? `${geo.city}, ${geo.country}` : "Unknown";
+
+    // Check for anomalies
+    const pastLogins = await LoginLog.find({ userId: user._id, role: "User" });
+
+    const isKnownIP = pastLogins.some((log) => log.ipAddress === ip);
+    const isKnownDevice = pastLogins.some((log) => log.userAgent === userAgent);
+    const isKnownLocation = pastLogins.some((log) => log.location === location);
+
+    const isAnomalous = !(isKnownIP && isKnownDevice && isKnownLocation);
+
+    // Save login record
+    await LoginLog.create({
+      userId: user._id,
+      role: "User",
+      ipAddress: ip,
+      userAgent,
+      location,
+      isAnomalous,
+    });
+
+    // If anomaly detected, force email verification
+    if (isAnomalous) {
+      user.isVerified = false;
+
+      const newVerificationToken = Math.floor(
+        100000 + Math.random() * 900000
+      ).toString();
+      user.verificationToken = newVerificationToken;
+      user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000;
+
+      await user.save();
+      await sendVerificationEmail(user.mail, newVerificationToken);
+
+      return res.status(403).json({
+        success: false,
+        message: "Unusual login detected. Verification required.",
+        anomaly: true,
+      });
+    }
+
     await user.save();
 
     res.status(200).json({

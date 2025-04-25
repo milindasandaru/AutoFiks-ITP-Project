@@ -21,6 +21,7 @@ import HelpCenter from "./pages/employee/HelpCenter";
 import CartPage from "./pages/user/CartPage";
 import StorePage from "./pages/user/StorePage";
 import SparePartViewPage from "./pages/user/SparePartViewPage";
+import UserLayout from "./components/user/UserLayout";
 
 //protected routees that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -53,7 +54,8 @@ const RedirectAuthenticatedUser = ({ children }) => {
 };
 
 function App() {
-  const { checkAuth, isAuthenticated, user, role } = useAuthStore();
+  const { checkAuth, isAuthenticated, user, role, isCheckingAuth } =
+    useAuthStore();
 
   useEffect(() => {
     checkAuth();
@@ -62,6 +64,10 @@ function App() {
   console.log("App.jsx - Is authenticated: ", isAuthenticated);
   console.log("App.jsx - User: ", user);
   console.log("App.jsx - Role: ", role);
+
+  if (isCheckingAuth) {
+    return <div className="text-center p-10">Checking authentication...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-[#f3f4f6] flex items-center justify-center relative overflow-hidden">
@@ -87,36 +93,11 @@ function App() {
         delay={2}
       />
 
-      {/*Main sections*/}
       <Routes>
+        {/*Base path*/}
         <Route path="/" element={<Navigate to="/overview" replace />} />
-        <Route
-          path="/overview"
-          element={
-            <ProtectedRoute>
-              <OverviewPage />
-            </ProtectedRoute>
-          }
-        ></Route>
 
-        <Route
-          path="/store"
-          element={
-            <ProtectedRoute>
-              <StorePage />
-            </ProtectedRoute>
-          }
-        ></Route>
-        <Route path="/spare-part/:id" element={<SparePartViewPage />} />
-
-        <Route
-          path="/cart"
-          element={
-            <ProtectedRoute>
-              <CartPage />
-            </ProtectedRoute>
-          }
-        ></Route>
+        
 
         {/*Authentication sections*/}
         <Route
@@ -155,13 +136,28 @@ function App() {
           }
         />
 
-        {/*User Navigation*/}
-        <Route path="/user-profile" element={<UserProfilePage />}></Route>
-
+        {/* User Navigation */}
         <Route
-          path="/edit-user-profile"
-          element={<EditUserProfilePage />}
-        ></Route>
+          path="/overview"
+          element={
+            <ProtectedRoute>
+              <UserLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<OverviewPage />} />
+          <Route path="spare-parts" element={<StorePage />} />
+          <Route path="cart" element={<CartPage />} />
+          
+          {/*<Route path="service-ticket" element={<ServiceTicketPage />} />
+          <Route path="tracking" element={<LiveTrackingPage />} />
+          <Route path="payment" element={<PaymentPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+          <Route path="contact-us" element={<ContactUsPage />} />*/}
+          <Route path="user-profile" element={<UserProfilePage />} />
+          <Route path="edit-user-profile" element={<EditUserProfilePage />} />
+          {/*<Route path="help-center" element={<HelpCenterPage />} />*/}
+        </Route>
 
         {/*Employee navigationa*/}
         <Route path="/employee-dashboard" element={<Layout />}>
