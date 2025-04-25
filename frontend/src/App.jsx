@@ -157,10 +157,10 @@ function App() {
         </Route>
 
          {/*Inquiry navigationa*/}
-         <Route path="/inquries/add" element={<AddInquiry />}/>
-         <Route path="/inquries/manage" element={<ManageInquiry />}/>
-         <Route path="/inquries/edit/:id" element={<EditInquiry />}/>
-         <Route path="/inquries/view/:id" element={<ViewOneInquiry />}/>
+         <Route path="/inquiries/add" element={<AddInquiry />}/>
+         <Route path="/inquiries/manage" element={<ManageInquiry />}/>
+         <Route path="/inquiries/edit/:id" element={<EditInquiry />}/>
+         <Route path="/inquiries/view/:id" element={<ViewOneInquiry />}/>
 
         {/* For invalid routes*/}
         <Route path="*" element={<Navigate to="/" replace />} />

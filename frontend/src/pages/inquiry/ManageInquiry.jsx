@@ -1,20 +1,22 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Loader, Trash, Edit, AlertCircle } from "lucide-react";
+import { Loader, Trash, Edit, Plus } from "lucide-react";
 import axios from "axios";
 import logo from "../../assets/images/AMS_logo2.png";
-import { Link } from "react-router-dom";
-import { AiOutlineEdit } from 'react-icons/ai';
+import { Link, useNavigate } from "react-router-dom";
 
 const ManageInquiry = () => {
   const [inquiries, setInquiries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  // Fetch all inquiries
+  // Fetch user's inquiries
   const fetchInquiries = async () => {
     try {
-      const response = await axios.get("http://localhost:8070/api/inquiries");
+      const response = await axios.get("http://localhost:8070/api/inquiries", {
+        withCredentials: true,
+      });
       if (response.data.success) {
         setInquiries(response.data.inquiries);
       }
@@ -26,36 +28,19 @@ const ManageInquiry = () => {
     }
   };
 
-  // Delete an inquiry
   const handleDelete = async (id) => {
-    try {
-      const response = await axios.delete(
-        `http://localhost:8070/api/inquiries/${id}`
-      );
-      if (response.data.success) {
-        setInquiries(inquiries.filter((inquiry) => inquiry._id !== id));
-      }
-    } catch (error) {
-      console.error("Error deleting inquiry:", error);
-    }
-  };
-
-  // Update inquiry status
-  const handleUpdateStatus = async (id, newStatus) => {
-    try {
-      const response = await axios.put(
-        `http://localhost:8070/api/inquiries/${id}`,
-        { status: newStatus }
-      );
-      if (response.data.success) {
-        setInquiries(
-          inquiries.map((inquiry) =>
-            inquiry._id === id ? { ...inquiry, status: newStatus } : inquiry
-          )
+    if (window.confirm("Are you sure you want to delete this inquiry?")) {
+      try {
+        const response = await axios.delete(
+          `http://localhost:8070/api/inquiries/${id}`, // Add the ID here
+          { withCredentials: true }
         );
+        if (response.data.success) {
+          setInquiries(inquiries.filter((inquiry) => inquiry._id !== id));
+        }
+      } catch (error) {
+        console.error("Error deleting inquiry:", error);
       }
-    } catch (error) {
-      console.error("Error updating inquiry status:", error);
     }
   };
 
@@ -64,100 +49,123 @@ const ManageInquiry = () => {
   }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="max-w-4xl w-full h-max mt-[40px] mb-[40px] bg-white bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden"
-    >
-      <div className="pt-8 pr-8 pl-8 h-max">
-        <div className="w-max-content h-20 place-items-center">
-          <img src={logo} className="h-[75px]" alt="Logo" />
-        </div>
-        <h2 className="text-2xl font-medium font-poppins mb-6 text-center bg-black text-transparent bg-clip-text">
-          Manage Inquiries
-        </h2>
-
-        {isLoading ? (
-          <div className="flex justify-center items-center h-40">
-            <Loader className="animate-spin" size={32} />
+    <div className="min-h-screen bg-gray-100">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full bg-white bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden"
+      >
+        <div className="p-8">
+          <div className="flex justify-center mb-6">
+            <img src={logo} className="h-[75px]" alt="Logo" />
           </div>
-        ) : error ? (
-          <div className="text-red-500 text-center">{error}</div>
-        ) : (
-          <div className="space-y-4">
-            {inquiries.map((inquiry) => (
-              <motion.div
-                key={inquiry._id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="p-4 bg-white rounded-lg shadow-md"
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                  <p className="text-sm text-gray-600">Inquiry ID: {inquiry._id}</p>
-                    <p className="text-lg font-semibold">{inquiry.userName}</p>
-                    <p className="text-sm text-gray-600">{inquiry.mail}</p>
-                    <p className="text-sm text-gray-600">
-                      Service ID: {inquiry.serviceID}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Type: {inquiry.type}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Status:{" "}
-                      <span
-                        className={`font-semibold ${
-                          inquiry.status === "very important"
-                            ? "text-red-600"
-                            : inquiry.status === "important"
-                            ? "text-orange-600"
-                            : "text-green-600"
-                        }`}
-                      >
-                        {inquiry.status}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="flex space-x-2">
-                    {/* Update Status Dropdown */}
-                    {inquiry.type === "complaint" && (
-                      <select
-                        value={inquiry.status}
-                        onChange={(e) =>
-                          handleUpdateStatus(inquiry._id, e.target.value)
-                        }
-                        className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="normal">Normal</option>
-                        <option value="important">Important</option>
-                        <option value="very important">Very Important</option>
-                      </select>
-                    )}
+          <h2 className="text-2xl font-medium font-poppins mb-6 text-center bg-black text-transparent bg-clip-text">
+            My Inquiries
+          </h2>
 
-                    {/* Delete Button */}
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => handleDelete(inquiry._id)}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
-                    >
-                      <Trash size={20} />
-                    </motion.button>
-
-                    <Link to={`/inquries/edit/${inquiry._id}`} title="Edit">
-                       <AiOutlineEdit className="text-xl text-yellow-600 hover:text-yellow-800 transition-colors" /> </Link>
-                  </div>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-40">
+              <Loader className="animate-spin" size={32} />
+            </div>
+          ) : error ? (
+            <div className="text-red-500 text-center">{error}</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {inquiries.length === 0 ? (
+                <div className="col-span-full text-center text-gray-500 py-8">
+                  No inquiries found. Click the + button to add a new inquiry.
                 </div>
-                <p className="mt-2 text-gray-700">{inquiry.message}</p>
-              </motion.div>
-            ))}
-          </div>
-        )}
-      </div>
-    </motion.div>
+              ) : (
+                inquiries.map((inquiry) => (
+                  <motion.div
+                    key={inquiry._id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-4 mb-2">
+                          <p className="text-lg font-semibold">
+                            {inquiry.userName}
+                          </p>
+                          <span
+                            className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              inquiry.type === "complaint"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-blue-100 text-blue-800"
+                            }`}
+                          >
+                            {inquiry.type}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-1">
+                          {inquiry.mail}
+                        </p>
+                        <p className="text-sm text-gray-600 mb-1">
+                          Service ID: {inquiry.serviceID}
+                        </p>
+                        {inquiry.status && (
+                          <p className="text-sm text-gray-600">
+                            Status:{" "}
+                            <span
+                              className={`font-semibold ${
+                                inquiry.status === "very important"
+                                  ? "text-red-600"
+                                  : inquiry.status === "important"
+                                  ? "text-orange-600"
+                                  : "text-green-600"
+                              }`}
+                            >
+                              {inquiry.status}
+                            </span>
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex space-x-2">
+                        <Link to={`/inquiries/edit/${inquiry._id}`}>
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg"
+                          >
+                            <Edit size={20} />
+                          </motion.button>
+                        </Link>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => handleDelete(inquiry._id)}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                        >
+                          <Trash size={20} />
+                        </motion.button>
+                      </div>
+                    </div>
+                    <p className="mt-4 text-gray-700 bg-gray-50 p-4 rounded-lg">
+                      {inquiry.message}
+                    </p>
+                  </motion.div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Floating Add Button */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => navigate("/inquiries/add")}
+        className="fixed bottom-8 right-8 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors z-50"
+      >
+        <Plus size={24} />
+      </motion.button>
+    </div>
   );
 };
 
-export default ManageInquiry;
+export default ManageInquiry; 

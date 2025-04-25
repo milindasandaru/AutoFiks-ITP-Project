@@ -1,30 +1,42 @@
-import Inquiry from '../models/inquiry.js'; // Corrected import path
+import Inquiry from "../models/inquiry.js"; // Corrected import path
 
 // Create a new inquiry
 export async function addInquiry(req, res) {
   const { mail, userName, serviceID, type, message, status } = req.body;
+  const userID = req.userID; // Get userID from the verified token
 
   try {
     const newInquiry = new Inquiry({
+      userID,
       mail,
       userName,
       serviceID,
       type,
       message,
-      status: type === 'complaint' ? status : undefined, // Set status only for complaints
+      status: type === "complaint" ? status : undefined, // Set status only for complaints
     });
 
     await newInquiry.save();
-    res.status(201).json({ success: true, message: 'Inquiry added successfully', inquiry: newInquiry });
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: "Inquiry added successfully",
+        inquiry: newInquiry,
+      });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
 }
 
 // Get all inquiries
+// Get all inquiries for the logged-in user
 export async function getAllInquiries(req, res) {
   try {
-    const inquiries = await Inquiry.find(); // Use Inquiry.find()
+    const inquiries = await Inquiry.find({ userID: req.userID }).populate(
+      "userID",
+      "name email"
+    );
     res.status(200).json({ success: true, inquiries });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -36,10 +48,23 @@ export async function getInquiryById(req, res) {
   const { id } = req.params;
 
   try {
-    const inquiry = await Inquiry.findById(id); // Use Inquiry.findById()
+    const inquiry = await Inquiry.findById(id).populate("userID", "name email");
     if (!inquiry) {
-      return res.status(404).json({ success: false, message: 'Inquiry not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Inquiry not found" });
     }
+
+    // Check if the user is accessing their own inquiry
+    if (
+      inquiry.userID._id.toString() !== req.userID &&
+      req.userRole !== "admin"
+    ) {
+      return res
+        .status(403)
+        .json({ success: false, message: "Unauthorized access" });
+    }
+
     res.status(200).json({ success: true, inquiry });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -52,9 +77,18 @@ export async function updateInquiry(req, res) {
   const { mail, userName, serviceID, type, message, status } = req.body;
 
   try {
-    const inquiry = await Inquiry.findById(id); // Use Inquiry.findById()
+    const inquiry = await Inquiry.findById(id);
     if (!inquiry) {
-      return res.status(404).json({ success: false, message: 'Inquiry not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Inquiry not found" });
+    }
+
+    // Check if the user is updating their own inquiry
+    if (inquiry.userID.toString() !== req.userID && req.userRole !== "admin") {
+      return res
+        .status(403)
+        .json({ success: false, message: "Unauthorized access" });
     }
 
     inquiry.mail = mail || inquiry.mail;
@@ -62,10 +96,16 @@ export async function updateInquiry(req, res) {
     inquiry.serviceID = serviceID || inquiry.serviceID;
     inquiry.type = type || inquiry.type;
     inquiry.message = message || inquiry.message;
-    inquiry.status = type === 'complaint' ? status : undefined; // Update status only for complaints
+    inquiry.status = type === "complaint" ? status : undefined;
 
     await inquiry.save();
-    res.status(200).json({ success: true, message: 'Inquiry updated successfully', inquiry });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Inquiry updated successfully",
+        inquiry,
+      });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -76,11 +116,24 @@ export async function deleteInquiry(req, res) {
   const { id } = req.params;
 
   try {
-    const inquiry = await Inquiry.findByIdAndDelete(id); // Use Inquiry.findByIdAndDelete()
+    const inquiry = await Inquiry.findById(id);
     if (!inquiry) {
-      return res.status(404).json({ success: false, message: 'Inquiry not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "Inquiry not found" });
     }
-    res.status(200).json({ success: true, message: 'Inquiry deleted successfully' });
+
+    // Check if the user is deleting their own inquiry
+    if (inquiry.userID.toString() !== req.userID && req.userRole !== "admin") {
+      return res
+        .status(403)
+        .json({ success: false, message: "Unauthorized access" });
+    }
+
+    await inquiry.deleteOne();
+    res
+      .status(200)
+      .json({ success: true, message: "Inquiry deleted successfully" });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -90,24 +143,50 @@ export async function deleteInquiry(req, res) {
 export async function getInquiriesByType(req, res) {
   try {
     const { type } = req.params;
-    if (!['feedback', 'complaint'].includes(type)) {
+    if (!["feedback", "complaint"].includes(type)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid inquiry type',
+        message: "Invalid inquiry type",
       });
     }
 
-    const inquiries = await Inquiry.find({ type }).sort({ createdAt: -1 }); // Use Inquiry.find()
+    const inquiries = await Inquiry.find({
+      type,
+      userID: req.userID, // Only get inquiries for the current user
+    })
+      .sort({ createdAt: -1 })
+      .populate("userID", "name email");
+
     res.status(200).json({
       success: true,
       data: inquiries,
     });
   } catch (error) {
-    console.error('Error fetching inquiries by type:', error);
+    console.error("Error fetching inquiries by type:", error);
     res.status(500).json({
       success: false,
-      message: 'Error fetching inquiries',
+      message: "Error fetching inquiries",
       error: error.message,
     });
+  }
+}
+
+export async function getNextServiceID(req, res) {
+  try {
+    const lastInquiry = await Inquiry.findOne().sort({
+      serviceID: -1
+    });
+
+    let nextServiceID = "1"; // Default starting point
+
+    if (lastInquiry && lastInquiry.serviceID) {
+      // Assuming serviceID is numeric string
+      const lastID = parseInt(lastInquiry.serviceID);
+      nextServiceID = (lastID + 1).toString();
+    }
+
+    res.status(200).json({ success: true, nextServiceID });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 }

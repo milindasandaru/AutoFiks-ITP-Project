@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Loader, AlertCircle, ArrowLeft } from "lucide-react";
+import { Loader, AlertCircle, ArrowLeft,Trash } from "lucide-react";
 import axios from "axios";
 import logo from "../../assets/images/AMS_logo2.png";
+import { Link } from "react-router-dom";
+import { AiOutlineEdit, AiOutlineEye } from 'react-icons/ai';
 
 const ViewOneInquiry = () => {
   const { id } = useParams(); // Get the inquiry ID from the URL
@@ -11,6 +13,21 @@ const ViewOneInquiry = () => {
   const [inquiry, setInquiry] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Delete an inquiry
+  
+    /*const handleDelete = async (id) => {
+      try {
+        const response = await axios.delete(
+          `http://localhost:8070/api/inquiries/${id}`
+        );
+        if (response.data.success) {
+          setInquiries(inquiries.filter((inquiry) => inquiry._id !== id));
+        }
+      } catch (error) {
+        console.error("Error deleting inquiry:", error);
+      }
+    };*/
 
   // Fetch the inquiry details
   useEffect(() => {
@@ -122,6 +139,20 @@ const ViewOneInquiry = () => {
             </p>
           </div>
         </div>
+
+        <Link to={`/inquries/edit/${inquiry._id}`} title="Edit">
+                       <AiOutlineEdit className="text-xl text-yellow-600 hover:text-yellow-800 transition-colors" /> </Link>
+                       {/* Delete Button */}
+                    {/*<motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => handleDelete(inquiry._id)}
+                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                    >
+                      <Trash size={20} />
+                    </motion.button>*/}
+         <Link to={`/inquries/manage`} title="Edit">
+         <AiOutlineEye className="text-xl text-yellow-600 hover:text-yellow-800 transition-colors" /> </Link>
 
         <motion.button
           whileHover={{ scale: 1.05 }}

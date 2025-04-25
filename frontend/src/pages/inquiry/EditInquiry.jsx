@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Loader, Save, AlertCircle } from "lucide-react";
+import { Loader, Save } from "lucide-react";
 import axios from "axios";
+import toast from "react-hot-toast";
 import logo from "../../assets/images/AMS_logo2.png";
 
 const EditInquiry = () => {
@@ -22,7 +23,8 @@ const EditInquiry = () => {
     const fetchInquiry = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8070/api/inquiries/${id}`
+          `http://localhost:8070/api/inquiries/${id}`,
+          { withCredentials: true }
         );
         if (response.data.success) {
           const inquiry = response.data.inquiry;
@@ -47,7 +49,6 @@ const EditInquiry = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await axios.put(
         `http://localhost:8070/api/inquiries/${id}`,
@@ -57,16 +58,19 @@ const EditInquiry = () => {
           serviceID,
           type,
           message,
-          status: type === "complaint" ? status : undefined, // Only include status for complaints
-        }
+          status: type === "complaint" ? status : undefined,
+        },
+        { withCredentials: true }
       );
 
       if (response.data.success) {
-        // Redirect to the view page of the newly created inquiry
-        navigate(`/inquiries/view/${response.data.inquiry._id}`);
+        toast.success("Inquiry updated successfully!");
+        navigate(`/inquiries/manage`);
+      } else {
+        console.error("Update failed:", response.data.message);
       }
     } catch (error) {
-      console.error("Error updating inquiry:", error);
+      console.error("Error updating inquiry:", error.response?.data || error);
     }
   };
 

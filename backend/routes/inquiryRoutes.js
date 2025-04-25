@@ -6,26 +6,32 @@ import {
   updateInquiry,
   deleteInquiry,
   getInquiriesByType,
+  getNextServiceID,
 } from '../controllers/inquiryController.js'; // Corrected import path
+import { verifyToken } from '../middleware/verifyToken.js';
 
 const router = express.Router();
 
+router.get("/next-service-id", getNextServiceID);
+
 // Create a new inquiry
-router.post('/', addInquiry);
+router.post('/', verifyToken, addInquiry);
 
 // Get all inquiries
-router.get('/', getAllInquiries);
+router.get('/', verifyToken, getAllInquiries);
 
 // Get a single inquiry by ID
-router.get('/:id', getInquiryById);
+router.get('/:id', verifyToken, getInquiryById);
 
 // Update an inquiry by ID
-router.put('/:id', updateInquiry);
+router.put('/:id', verifyToken, updateInquiry);
 
 // Delete an inquiry by ID
-router.delete('/:id', deleteInquiry);
+router.delete('/:id', verifyToken, deleteInquiry);
 
 // Get inquiries by type (feedback or complaint)
-router.get('/type/:type', getInquiriesByType);
+router.get('/type/:type', verifyToken, getInquiriesByType);
+
+
 
 export default router;
