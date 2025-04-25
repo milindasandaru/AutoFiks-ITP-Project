@@ -45,10 +45,7 @@ const userSChema = new mongoose.Schema(
     resetPasswordExpiresAt: Date,
     verificationToken: String,
     verificationTokenExpiresAt: Date,
-    cart: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Cart",
-    },
+   
   },
   { timestamps: true }
 );
