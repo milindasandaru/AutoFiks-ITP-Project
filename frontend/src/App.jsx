@@ -23,6 +23,7 @@ import StorePage from "./pages/user/StorePage";
 import SparePartViewPage from "./pages/user/SparePartViewPage";
 import UserLayout from "./components/user/UserLayout";
 import ServiceSchedule from "./pages/user/Appointmentbookingform";
+import LiveTrackingPage from "./pages/user/LiveTracking";
 import BookingsList from "./pages/user/Bookingslist"; // ✅ FIXED: Capitalized
 
 // Protected route that requires authentication
@@ -131,6 +132,7 @@ function App() {
           <Route path="cart" element={<CartPage />} />
           <Route path="service-ticket" element={<ServiceSchedule />} />
           <Route path="booking-list" element={<BookingsList />} />
+          <Route path="tracking" element={<LiveTrackingPage />} />
           <Route path="user-profile" element={<UserProfilePage />} />
           <Route path="edit-user-profile" element={<EditUserProfilePage />} />
 
