@@ -10,6 +10,9 @@ import cartRouter from "./routes/cart.route.js";
 import adminUserRoutes from "./routes/adminuser.route.js";
 import cors from "cors";
 import { connectDB } from "./config/connectDB.js";
+
+import inquiryRoutes from "./routes/inquiryRoutes.js";
+
 import path from "path";
 import { fileURLToPath } from "url";
 dotenv.config();
@@ -32,6 +35,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/ai", userAIRoutes);
 app.use("/api/employees", employeeRoutes);
+app.use("/api/inquiries", inquiryRoutes);
 app.use("/api/sparepart", sparePartRoutes);
 app.use("/api/cart", cartRouter);
 app.use("/api/admin/user", adminUserRoutes);

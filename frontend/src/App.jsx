@@ -23,6 +23,11 @@ import StorePage from "./pages/user/StorePage";
 import SparePartViewPage from "./pages/user/SparePartViewPage";
 import UserLayout from "./components/user/UserLayout";
 
+import AddInquiry from "./pages/inquiry/AddInquiry";
+import ManageInquiry from "./pages/inquiry/ManageInquiry";
+import EditInquiry from "./pages/inquiry/EditInquiry";
+import ViewOneInquiry from "./pages/inquiry/ViewOneInquiry";
+
 //protected routees that require authentication
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
@@ -151,8 +156,12 @@ function App() {
           {/*<Route path="service-ticket" element={<ServiceTicketPage />} />
           <Route path="tracking" element={<LiveTrackingPage />} />
           <Route path="payment" element={<PaymentPage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="contact-us" element={<ContactUsPage />} />*/}
+          <Route path="notifications" element={<NotificationsPage />} /> */}
+          {/*Inquiry navigationa*/}
+         <Route path="inquiries/add" element={<AddInquiry />}/>
+         <Route path="inquiries/manage" element={<ManageInquiry />}/>
+         <Route path="inquiries/edit/:id" element={<EditInquiry />}/>
+         <Route path="inquiries/view/:id" element={<ViewOneInquiry />}/>
           <Route path="user-profile" element={<UserProfilePage />} />
           <Route path="edit-user-profile" element={<EditUserProfilePage />} />
           {/*<Route path="help-center" element={<HelpCenterPage />} />*/}
@@ -167,6 +176,8 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="helpcenter" element={<HelpCenter />} />
         </Route>
+
+         
 
         {/* For invalid routes*/}
         <Route path="*" element={<Navigate to="/" replace />} />
