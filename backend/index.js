@@ -8,6 +8,7 @@ import employeeRoutes from "./routes/employeeRoutes.js";
 import sparePartRoutes from "./routes/sparepart.route.js";
 import cartRouter from "./routes/cart.route.js";
 import adminUserRoutes from "./routes/adminuser.route.js";
+import attendanceRoutes from "./routes/attendanceRoutes.js";
 import cors from "cors";
 import { connectDB } from "./config/connectDB.js";
 
@@ -39,6 +40,7 @@ app.use("/api/inquiries", inquiryRoutes);
 app.use("/api/sparepart", sparePartRoutes);
 app.use("/api/cart", cartRouter);
 app.use("/api/admin/user", adminUserRoutes);
+app.use("/api/attendance", attendanceRoutes);
 
 app.listen(8070, () => {
   connectDB();
