@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import FloatingShape from "./components/FloatingShape";
 import Layout from "./components/Layout";
 import AdminDashboard from "./pages/AdminDashboard";
-import ServiceTicket from "./pages/Service shedule/ServiceTicket";
 import Employee from "./pages/Employee/Employee";
 import Customer from "./pages/Customer";
 import Billing from "./pages/Billing";
@@ -16,6 +15,7 @@ import CreateNewSparePart from "./pages/SpareParts/CreateNewSparePart";
 import UpdateSparePart from "./pages/SpareParts/UpdateSparePart";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
+import ServiceTicket from "./pages/Service shedule/ServiceTicket";
 
 function App() {
   return (
