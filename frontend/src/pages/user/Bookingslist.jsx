@@ -20,7 +20,16 @@ const BookingsList = () => {
       setError(null);
       try {
         const response = await axios.get('/api/bookings');
-        setBookings(response.data);
+
+        // Check the structure of the response and handle appropriately
+        if (response.data && Array.isArray(response.data)) {
+          setBookings(response.data);
+        } else {
+          // If the response is not as expected, log it for debugging
+          console.warn("Unexpected response format:", response.data);
+          setBookings([]); // Ensure bookings is an empty array to prevent .map() errors
+          setError('Failed to load bookings: Unexpected data format.');
+        }
       } catch (err) {
         setError(err.message || 'Failed to load bookings.');
       } finally {
@@ -57,7 +66,7 @@ const BookingsList = () => {
     e.preventDefault();
     try {
       const response = await axios.put(`/api/bookings/${editingId}`, editFormData);
-      setBookings(bookings.map(booking => 
+      setBookings(bookings.map(booking =>
         booking._id === editingId ? response.data : booking
       ));
       setEditingId(null);
@@ -100,7 +109,7 @@ const BookingsList = () => {
         <p className="text-center text-gray-500">No bookings found.</p>
       ) : (
         <ul className="space-y-4">
-          {(bookings || []).map((booking) => (
+          {bookings.map((booking) => (
             <li
               key={booking._id}
               className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200"
@@ -163,13 +172,13 @@ const BookingsList = () => {
                     </div>
                   </div>
                   <div className="flex space-x-2 mt-4">
-                    <button 
+                    <button
                       type="submit"
                       className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
                     >
                       Save Changes
                     </button>
-                    <button 
+                    <button
                       type="button"
                       onClick={() => setEditingId(null)}
                       className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
@@ -182,34 +191,34 @@ const BookingsList = () => {
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <p>
-                      <span className="font-semibold text-gray-700">Model:</span>{' '}
+                      <span className="font-semibold text-gray-700">Model:</span>
                       {booking.model}
                     </p>
                     <p>
-                      <span className="font-semibold text-gray-700">Year:</span>{' '}
+                      <span className="font-semibold text-gray-700">Year:</span>
                       {booking.year}
                     </p>
                     <p>
-                      <span className="font-semibold text-gray-700">Registration:</span>{' '}
+                      <span className="font-semibold text-gray-700">Registration:</span>
                       {booking.registrationNumber}
                     </p>
                     <p>
-                      <span className="font-semibold text-gray-700">Service:</span>{' '}
+                      <span className="font-semibold text-gray-700">Service:</span>
                       {booking.serviceType}
                     </p>
                   </div>
                   <p className="mt-2">
-                    <span className="font-semibold text-gray-700">Date/Time:</span>{' '}
-                    {new Date(booking.selectedDateTime).toLocaleString()}
+                    <span className="font-semibold text-gray-700">Date/Time:</span>
+                    {booking.selectedDateTime ? new Date(booking.selectedDateTime).toLocaleString() : 'N/A'}
                   </p>
                   <div className="flex space-x-2 mt-4">
-                    <button 
+                    <button
                       onClick={() => handleEdit(booking)}
                       className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
                     >
                       Edit
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleDelete(booking._id)}
                       className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
                     >
