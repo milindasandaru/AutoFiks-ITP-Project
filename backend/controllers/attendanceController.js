@@ -26,6 +26,7 @@ export const markAttendance = async (req, res) => {
     }
     
     // Check if employee has already checked in today
+    // Use local timezone for consistent date boundaries
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
@@ -46,11 +47,14 @@ export const markAttendance = async (req, res) => {
       employeeId: employee.employeeId
     };
     
+    // Get current time with precise timestamp
+    const currentTime = new Date();
+    
     if (!attendance) {
       // First check-in for the day
       attendance = new Attendance({
         employeeId: employee._id,
-        checkInTime: new Date(),
+        checkInTime: currentTime,
         location: location || "Office",
         status: "present", // Initially mark as present
       });
@@ -59,19 +63,29 @@ export const markAttendance = async (req, res) => {
       
       return res.status(200).json({
         success: true,
-        message: `Check-in successful at ${new Date().toLocaleTimeString()}`,
+        message: `Check-in successful at ${currentTime.toLocaleTimeString()}`,
         attendance,
         employee: employeeDetails,
         isCheckIn: true
       });
     } else if (!attendance.checkOutTime) {
       // Check-out
-      attendance.checkOutTime = new Date();
+      // Ensure check-out time is after check-in time
+      if (currentTime <= new Date(attendance.checkInTime)) {
+        return res.status(400).json({
+          success: false,
+          message: "Check-out time cannot be earlier than check-in time",
+          employee: employeeDetails
+        });
+      }
       
-      // Calculate work duration in hours
+      attendance.checkOutTime = currentTime;
+      
+      // Calculate work duration in hours (more precise calculation)
       const checkInTime = new Date(attendance.checkInTime);
       const checkOutTime = new Date(attendance.checkOutTime);
-      const workDuration = (checkOutTime - checkInTime) / (1000 * 60 * 60);
+      const workDurationMs = checkOutTime.getTime() - checkInTime.getTime();
+      const workDuration = workDurationMs / (1000 * 60 * 60); // Convert to hours
       
       // Set status based on duration
       if (workDuration >= 8) {
@@ -97,7 +111,8 @@ export const markAttendance = async (req, res) => {
         workDuration: {
           hours,
           minutes,
-          total: workDuration
+          total: workDuration,
+          milliseconds: workDurationMs // Add raw milliseconds for precise calculations
         }
       });
     } else {
@@ -125,11 +140,14 @@ export const getEmployeeAttendance = async (req, res) => {
 
     const dateFilter = {};
     if (startDate) {
-      dateFilter.$gte = new Date(startDate + "T00:00:00.000Z"); // Force UTC start
+      // Ensure start date begins at start of day in local timezone
+      dateFilter.$gte = new Date(startDate);
+      dateFilter.$gte.setHours(0, 0, 0, 0);
     }
     if (endDate) {
-      const endDateTime = new Date(endDate + "T23:59:59.999Z"); // Include full day
-      dateFilter.$lte = endDateTime;
+      // Ensure end date ends at end of day in local timezone
+      dateFilter.$lte = new Date(endDate);
+      dateFilter.$lte.setHours(23, 59, 59, 999);
     }
 
     const query = { employeeId: id };
@@ -138,7 +156,7 @@ export const getEmployeeAttendance = async (req, res) => {
     }
 
     const attendanceRecords = await Attendance.find(query)
-      .populate("employeeId", "name position employeeId") // Fetch employee details
+      .populate("employeeId", "name position employeeId")
       .sort({ createdAt: -1 });
 
     if (attendanceRecords.length === 0) {
@@ -170,11 +188,14 @@ export const getAllAttendance = async (req, res) => {
     
     const dateFilter = {};
     if (startDate) {
-      dateFilter.$gte = new Date(startDate + "T00:00:00.000Z");
+      // Ensure start date begins at start of day in local timezone
+      dateFilter.$gte = new Date(startDate);
+      dateFilter.$gte.setHours(0, 0, 0, 0);
     }
     if (endDate) {
-      const endDateTime = new Date(endDate + "T23:59:59.999Z");
-      dateFilter.$lte = endDateTime;
+      // Ensure end date ends at end of day in local timezone
+      dateFilter.$lte = new Date(endDate);
+      dateFilter.$lte.setHours(23, 59, 59, 999);
     }
 
     const query = {};

@@ -110,8 +110,8 @@ const Profile = () => {
                 </div>
                 
                 <div className="flex flex-col">
-                  <span className="text-sm text-gray-500">Salary (Per hour)</span>
-                  <span className="font-medium text-gray-800">LKR{employee.salary}</span>
+                  <span className="text-sm text-gray-500">Salary </span>
+                  <span className="font-medium text-gray-800">LKR {employee.salary}</span>
                 </div>
                 
                 <div className="flex flex-col">

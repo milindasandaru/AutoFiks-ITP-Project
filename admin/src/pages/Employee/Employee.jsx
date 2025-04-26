@@ -53,14 +53,14 @@ const Employee = () => {
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
-        {/*<h2 className="text-2xl font-bold">Employee Management</h2>
+        <h2 className="text-2xl font-bold">Employee Management</h2>
         <Link
           to="/taskManagement"
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
           <HiOutlineUserPlus /> Task
         </Link>
-        <Link
+        {/*<Link
           to="/leaveManagementAdmin"
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
@@ -83,7 +83,7 @@ const Employee = () => {
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
           <HiOutlineUserPlus /> Salary Management
-        </Link>
+        </Link>*/}
         <Link
           to="/attendancePage"
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
@@ -95,7 +95,7 @@ const Employee = () => {
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
           <HiOutlineUserPlus /> Attendance Report
-        </Link>*/}
+        </Link>
         <Link
           to="/createEmployee"
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
