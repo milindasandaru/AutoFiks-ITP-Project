@@ -17,7 +17,7 @@ const SideBar = () => {
     { id: 2, path: "/service_ticket", name: "Service Ticket", icon: HiOutlineClipboardDocumentList},
     { id: 3, path: "/employee", name: "Employee", icon: HiOutlineChatBubbleBottomCenterText },
     { id: 4, path: "/customer", name: "Customer", icon: HiOutlineDocumentCurrencyDollar },
-    { id: 5, path: "/billing", name: "Billing", icon: HiOutlineDocumentCurrencyDollar },
+    { id: 5, path: "/billing", name: "Customer Affairs", icon: HiOutlineDocumentCurrencyDollar },
     { id: 6, path: "/spare_parts", name: "Spare Parts", icon: HiOutlineDocumentCurrencyDollar },
     { id: 7, path: "/analytics", name: "Analytics", icon: HiOutlineDocumentCurrencyDollar },
 

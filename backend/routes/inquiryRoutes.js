@@ -7,6 +7,7 @@ import {
   deleteInquiry,
   getInquiriesByType,
   getNextServiceID,
+  sendInquiryReply
 } from '../controllers/inquiryController.js'; // Corrected import path
 import { verifyToken } from '../middleware/verifyToken.js';
 
@@ -31,6 +32,8 @@ router.delete('/:id', verifyToken, deleteInquiry);
 
 // Get inquiries by type (feedback or complaint)
 router.get('/type/:type', verifyToken, getInquiriesByType);
+
+router.post("/reply", verifyToken, sendInquiryReply);
 
 
 

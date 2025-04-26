@@ -1,4 +1,6 @@
 import Inquiry from "../models/inquiry.js"; // Corrected import path
+import { brevoTransporter, sender } from "../mails/brevo.config.js";
+
 
 // Create a new inquiry
 export async function addInquiry(req, res) {
@@ -190,3 +192,37 @@ export async function getNextServiceID(req, res) {
     res.status(500).json({ success: false, message: error.message });
   }
 }
+
+export const sendInquiryReply = async (req, res) => {
+  const { inquiryId, message } = req.body;
+
+  try {
+    const inquiry = await Inquiry.findById(inquiryId);
+    if (!inquiry) {
+      return res.status(404).json({ success: false, message: "Inquiry not found" });
+    }
+
+    const mailOptions = {
+      from: `"${sender.name}" <${sender.email}>`,  // Sender name and email
+      to: inquiry.mail,                            // Customer's email
+      subject: "Response to Your Inquiry",
+      html: `
+        <p>Dear ${inquiry.userName},</p>
+        <p>Thank you for reaching out to us regarding your ${inquiry.type}.</p>
+        <p><strong>Our Response:</strong></p>
+        <p>${message}</p>
+        <br/>
+        <p>Best regards,</p>
+        <p>Autofiks Customer Support Team</p>
+      `,
+    };
+
+    const response = await brevoTransporter.sendMail(mailOptions);
+    console.log("Inquiry reply email sent successfully", response);
+
+    res.status(200).json({ success: true, message: "Reply sent successfully" });
+  } catch (error) {
+    console.error("Error sending reply:", error);
+    res.status(500).json({ success: false, message: "Failed to send reply" });
+  }
+};

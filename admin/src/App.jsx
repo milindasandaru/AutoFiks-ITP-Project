@@ -5,7 +5,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ServiceTicket from "./pages/Service shedule/ServiceTicket";
 import Employee from "./pages/Employee/Employee";
 import Customer from "./pages/Customer";
-import Billing from "./pages/Billing";
+import Billing from "./pages/CustomerAffairs";
 import SpareParts from "./pages/SpareParts/SpareParts";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
