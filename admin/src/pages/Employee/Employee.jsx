@@ -60,13 +60,13 @@ const Employee = () => {
         >
           <HiOutlineUserPlus /> Task
         </Link>
-        {/*<Link
+        <Link
           to="/leaveManagementAdmin"
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
           <HiOutlineUserPlus /> Leave Management
         </Link>
-        <Link
+        {/*<Link
           to="/helpCenterAdmin"
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
