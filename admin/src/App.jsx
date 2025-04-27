@@ -4,13 +4,17 @@ import Layout from "./components/Layout";
 import AdminDashboard from "./pages/AdminDashboard";
 import Employee from "./pages/Employee/Employee";
 import Customer from "./pages/Customer";
-import Billing from "./pages/Billing";
+import Billing from "./pages/CustomerAffairs";
 import SpareParts from "./pages/SpareParts/SpareParts";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
 import Setting from "./pages/Setting";
 import CreateEmployee from "./pages/Employee/CreateEmployee";
 import UpdateEmployee from "./pages/Employee/UpdateEmployee";
+import AttendancePage from "./pages/Employee/AttendancePage";
+import AttendanceReport from "./pages/Employee/AttendanceReport";
+import TaskManagement from "./pages/Employee/TaskManagement";
+import LeaveManagementAdmin from "./pages/Employee/LeaveManagementAdmin";
 import CreateNewSparePart from "./pages/SpareParts/CreateNewSparePart";
 import UpdateSparePart from "./pages/SpareParts/UpdateSparePart";
 import "./App.css";
@@ -54,7 +58,6 @@ function App() {
             <Route path="analytics" element={<Analytics />} />
             <Route path="profile" element={<Profile />} />
             <Route path="setting" element={<Setting />} />
-            <Route path="createEmployee" element={<CreateEmployee />} />
             <Route
               path="create-new-sparepart"
               element={<CreateNewSparePart />}
@@ -64,6 +67,11 @@ function App() {
               element={<UpdateSparePart />}
             />
             <Route path="updateEmployee/:id" element={<UpdateEmployee />} />
+            <Route path="createEmployee" element={<CreateEmployee />} />
+            <Route path="attendancePage" element={<AttendancePage />} />
+            <Route path="attendanceReport" element={<AttendanceReport />} />
+            <Route path="taskManagement" element={<TaskManagement />} />
+            <Route path="leaveManagementAdmin" element={<LeaveManagementAdmin />} />
           </Route>
         </Routes>
         <Toaster />

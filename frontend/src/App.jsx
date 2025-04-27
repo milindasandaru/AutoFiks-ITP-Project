@@ -17,7 +17,6 @@ import WorkSchedule from "./pages/employee/WorkSchedule";
 import Leaving from "./pages/employee/Leaving";
 import Earning from "./pages/employee/Earning";
 import Profile from "./pages/employee/Profile";
-import HelpCenter from "./pages/employee/HelpCenter";
 import CartPage from "./pages/user/CartPage";
 import StorePage from "./pages/user/StorePage";
 import SparePartViewPage from "./pages/user/SparePartViewPage";
@@ -26,7 +25,12 @@ import ServiceSchedule from "./pages/user/Appointmentbookingform";
 import LiveTrackingPage from "./pages/user/LiveTracking";
 import BookingsList from "./pages/user/Bookingslist"; // ✅ FIXED: Capitalized
 
-// Protected route that requires authentication
+import AddInquiry from "./pages/inquiry/AddInquiry";
+import ManageInquiry from "./pages/inquiry/ManageInquiry";
+import EditInquiry from "./pages/inquiry/EditInquiry";
+import ViewOneInquiry from "./pages/inquiry/ViewOneInquiry";
+
+//protected routees that require authentication
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
 
@@ -133,6 +137,13 @@ function App() {
           <Route path="service-ticket" element={<ServiceSchedule />} />
           <Route path="booking-list" element={<BookingsList />} />
           <Route path="tracking" element={<LiveTrackingPage />} />
+          
+          
+          {/*Inquiry navigationa*/}
+         <Route path="inquiries/add" element={<AddInquiry />}/>
+         <Route path="inquiries/manage" element={<ManageInquiry />}/>
+         <Route path="inquiries/edit/:id" element={<EditInquiry />}/>
+         <Route path="inquiries/view/:id" element={<ViewOneInquiry />}/>
           <Route path="user-profile" element={<UserProfilePage />} />
           <Route path="edit-user-profile" element={<EditUserProfilePage />} />
 
@@ -153,10 +164,12 @@ function App() {
           <Route path="leaving" element={<Leaving />} />
           <Route path="earning" element={<Earning />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="helpcenter" element={<HelpCenter />} />
         </Route>
 
         {/* Catch-all fallback */}
+         
+
+        {/* For invalid routes*/}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 

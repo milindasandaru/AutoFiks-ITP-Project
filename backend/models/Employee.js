@@ -21,7 +21,8 @@ const employeeSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   verificationToken: String,
   verificationTokenExpiresAt: Date,
-  //qrCode:{ type:String, unique: true, required:true}
-});
+  qrCode:{ type:String, unique: true, required:true}
+},);
 
-export default mongoose.model("Employee", employeeSchema);
+export const Employee = mongoose.model("Employee", employeeSchema);
+export default Employee;

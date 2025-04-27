@@ -10,8 +10,13 @@ import employeeRoutes from "./routes/employeeRoutes.js";
 import sparePartRoutes from "./routes/sparepart.route.js";
 import cartRouter from "./routes/cart.route.js";
 import adminUserRoutes from "./routes/adminuser.route.js";
+import attendanceRoutes from "./routes/attendanceRoutes.js";
+import taskRoutes from "./routes/taskRoutes.js";
+import leaveRequestRoutes from "./routes/leaveRequestRoutes.js";
 import cors from "cors";
 import { connectDB } from "./config/connectDB.js";
+import inquiryRoutes from "./routes/inquiryRoutes.js";
+
 import path from "path";
 import { fileURLToPath } from "url";
 import http from "http"; // 🆕 For creating HTTP server
@@ -60,11 +65,15 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/ai", userAIRoutes);
 app.use("/api/employees", employeeRoutes);
+app.use("/api/inquiries", inquiryRoutes);
 app.use("/api/sparepart", sparePartRoutes);
 app.use("/api/cart", cartRouter);
 app.use("/api/admin/user", adminUserRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/attendance", attendanceRoutes);
+app.use("/api/tasks", taskRoutes);
+app.use("/api/leave-requests", leaveRequestRoutes);
 
 // Start server
 server.listen(PORT, () => {

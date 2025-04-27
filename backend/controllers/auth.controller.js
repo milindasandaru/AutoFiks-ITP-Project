@@ -57,7 +57,7 @@ export const signup = async (req, res) => {
 
     await user.save();
 
-    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    let ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
     if (ip === "::1" || ip === "127.0.0.1") {
       ip = "8.8.8.8"; // only for local dev testing
     }
