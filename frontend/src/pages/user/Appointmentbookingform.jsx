@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
-
 // Import your logo image
 import logo from '../../assets/images/AMS_logo2.png'; 
 
@@ -66,6 +65,9 @@ const AppointmentBookingForm = () => {
         registrationNumber: formData.registrationNumber,
         serviceType: formData.serviceType,
         selectedDateTime: selectedDateTime,
+      },
+      { 
+        withCredentials: true // Ensure credentials (cookies) are sent with the request
       });
 
       setSuccess(true);
@@ -124,7 +126,6 @@ const AppointmentBookingForm = () => {
   };
 
 
-
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       {/* Logo added here */}
@@ -165,25 +166,25 @@ const AppointmentBookingForm = () => {
         </div>
 
         <div>
-  <label htmlFor="year" className="block mb-1 font-medium text-gray-700">
-    Vehicle Year <span className="text-red-500">*</span>
-  </label>
-  <select
-    id="year"
-    name="year"
-    value={formData.year}
-    onChange={handleChange}
-    required
-    className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-  >
-    <option value="">Select Year</option>
-    {years.map((year) => (
-      <option key={year} value={year}>
-        {year}
-      </option>
-    ))}
-  </select>
-</div>
+          <label htmlFor="year" className="block mb-1 font-medium text-gray-700">
+            Vehicle Year <span className="text-red-500">*</span>
+          </label>
+          <select
+            id="year"
+            name="year"
+            value={formData.year}
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select Year</option>
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <div>
           <label
@@ -214,10 +215,10 @@ const AppointmentBookingForm = () => {
                 <button
                   type="button"
                   onClick={() => handleDateChange({ target: { value: date } })}
-                  className={`w-full py-2 rounded-lg ${
+                  className={`w-full py-2 rounded-lg border ${
                     selectedDate === date
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300'
                   }`}
                 >
                   {formatDate(date)}
@@ -267,7 +268,7 @@ const AppointmentBookingForm = () => {
               'Oil Change & Filter Replacement',
               'Engine repairs',
               'Tire Rotation & Alignment',
-              
+
             ].map((service) => (
               <option key={service} value={service}>
                 {service}
@@ -308,3 +309,6 @@ const AppointmentBookingForm = () => {
 };
 
 export default AppointmentBookingForm;
+
+
+
