@@ -17,6 +17,7 @@ import helpRequestRoutes from "./routes/helpRequestRoutes.js";
 import salaryRoutes from "./routes/salaryRoutes.js";
 import adminDashboardRoutes from "./routes/admindashboardRoutes.js";
 import employeeDashboardRoutes from "./routes/employeeDashboardRoutes.js";
+import userDashboardRoutes from "./routes/userDashboardRoutes.js";
 import cors from "cors";
 import { connectDB } from "./config/connectDB.js";
 import inquiryRoutes from "./routes/inquiryRoutes.js";
@@ -82,6 +83,7 @@ app.use("/api/help-requests", helpRequestRoutes);
 app.use("/api/salary", salaryRoutes);
 app.use("/api/admin-dashboard", adminDashboardRoutes);
 app.use('/api/employee-dashboard', employeeDashboardRoutes);
+app.use('/api/user-dashboard', userDashboardRoutes);
 
 // Start server
 server.listen(PORT, () => {
