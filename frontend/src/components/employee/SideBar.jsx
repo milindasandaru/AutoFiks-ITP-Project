@@ -6,6 +6,7 @@ import {
   HiOutlineUser,
   HiOutlinePhone,
   HiOutlineClipboardDocumentList,
+  HiOutlineTicket,
 } from "react-icons/hi2";
 import AMS_logo2 from "../../assets/images/AMS_logo2.png";
 import AMS_logo_mini from "../../assets/images/AMS_logo_mini.png";
