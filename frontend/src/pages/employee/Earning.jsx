@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+//import { PDFDownloadLink, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const EmployeeSalaryView = () => {
   const [salaries, setSalaries] = useState([]);
@@ -21,7 +24,7 @@ const EmployeeSalaryView = () => {
           `${API_BASE_URL}/salary/my-salaries`,
           { withCredentials: true }
         );
-        
+
         if (response.data.success) {
           setSalaries(response.data.data);
           setError(null);
@@ -46,7 +49,7 @@ const EmployeeSalaryView = () => {
         `${API_BASE_URL}/salary/detail/${id}`,
         { withCredentials: true }
       );
-      
+
       if (response.data.success) {
         setActiveSalary(response.data.data);
         setError(null);
@@ -58,6 +61,67 @@ const EmployeeSalaryView = () => {
       setError(err.message || 'Failed to load salary details. Please try again.');
     }
   };
+
+  // PDF generation function
+  const generatePDF = async () => {
+    if (!activeSalary) return;
+
+    const salaryElement = document.getElementById('salary-details');
+    if (!salaryElement) return;
+
+    try {
+      // Show loading state
+      setGeneratingPDF(true);
+
+      // Create canvas from the salary details div
+      const canvas = await html2canvas(salaryElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+
+      // Initialize PDF document
+      const pdf = new jsPDF('p', 'mm', 'a4');
+
+      // Add title
+      pdf.setFontSize(16);
+      pdf.text('Salary Slip', 105, 15, { align: 'center' });
+      pdf.setFontSize(12);
+      pdf.text(activeSalary.period.label, 105, 22, { align: 'center' });
+
+      // Calculate dimensions
+      const imgWidth = 190;
+      const pageHeight = 280;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 30; // Starting position after the title
+
+      // Add the canvas as an image
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      // Add new pages if content overflows
+      while (heightLeft > 0) {
+        position = 0;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      // Save the PDF
+      pdf.save(`Salary_Slip_${activeSalary.period.label.replace(/\s/g, '_')}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      // Show error message to user
+      setError('Failed to generate PDF. Please try again.');
+    } finally {
+      setGeneratingPDF(false);
+    }
+  };
+
+  // Add state variable
+  const [generatingPDF, setGeneratingPDF] = useState(false);
 
   // Format currency
   const formatCurrency = (amount) => {
@@ -91,20 +155,20 @@ const EmployeeSalaryView = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800">My Salary Records</h1>
         </div>
-        
+
         {error && (
           <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
             <p>{error}</p>
           </div>
         )}
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Salary List */}
           <div className={`bg-white rounded-lg shadow-md overflow-hidden ${activeSalary ? 'hidden md:block md:col-span-1' : 'col-span-3'}`}>
             <div className="p-4 bg-blue-50 border-b border-blue-100">
               <h2 className="text-lg font-semibold text-gray-800">Salary History</h2>
             </div>
-            
+
             {salaries.length === 0 ? (
               <div className="p-8 text-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -115,8 +179,8 @@ const EmployeeSalaryView = () => {
             ) : (
               <ul className="divide-y divide-gray-200">
                 {salaries.map((salary) => (
-                  <li 
-                    key={salary._id} 
+                  <li
+                    key={salary._id}
                     className={`p-4 hover:bg-gray-50 transition duration-150 cursor-pointer ${activeSalary && activeSalary._id === salary._id ? 'bg-blue-50' : ''}`}
                     onClick={() => fetchSalaryDetails(salary._id)}
                   >
@@ -129,11 +193,10 @@ const EmployeeSalaryView = () => {
                       </div>
                       <div className="text-right">
                         <p className="text-xl font-bold text-green-600">{formatCurrency(salary.calculations.netSalary)}</p>
-                        <span className={`px-2 py-1 text-xs rounded-full ${
-                          salary.status === 'paid' ? 'bg-green-100 text-green-800' : 
-                          salary.status === 'finalized' ? 'bg-blue-100 text-blue-800' : 
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
+                        <span className={`px-2 py-1 text-xs rounded-full ${salary.status === 'paid' ? 'bg-green-100 text-green-800' :
+                            salary.status === 'finalized' ? 'bg-blue-100 text-blue-800' :
+                              'bg-yellow-100 text-yellow-800'
+                          }`}>
                           {salary.status.charAt(0).toUpperCase() + salary.status.slice(1)}
                         </span>
                       </div>
@@ -143,21 +206,45 @@ const EmployeeSalaryView = () => {
               </ul>
             )}
           </div>
-          
+
           {/* Salary Details */}
           {activeSalary && (
             <div className="bg-white rounded-lg shadow-md overflow-hidden md:col-span-2">
               <div className="p-4 md:flex md:justify-between md:items-center bg-blue-50 border-b border-blue-100">
                 <h2 className="text-lg font-semibold text-gray-800">Salary Details</h2>
-                <button 
-                  onClick={() => setActiveSalary(null)}
-                  className="mt-2 md:mt-0 text-gray-600 hover:text-gray-800 md:hidden"
-                >
-                  ← Back to list
-                </button>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={generatePDF}
+                    disabled={generatingPDF || !activeSalary}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition duration-200 flex items-center"
+                  >
+                    {generatingPDF ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Generating PDF...
+                      </>
+                    ) : (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Download PDF
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setActiveSalary(null)}
+                    className="mt-2 md:mt-0 text-gray-600 hover:text-gray-800 md:hidden"
+                  >
+                    ← Back to list
+                  </button>
+                </div>
               </div>
-              
-              <div className="p-6">
+
+              <div id="salary-details" className="p-6">
                 <div className="flex justify-between items-center mb-6">
                   <div>
                     <h1 className="text-xl font-bold text-gray-800">{activeSalary.period.label}</h1>
@@ -166,11 +253,10 @@ const EmployeeSalaryView = () => {
                     </p>
                   </div>
                   <div className="text-right">
-                    <span className={`px-3 py-1 text-sm rounded-full ${
-                      activeSalary.status === 'paid' ? 'bg-green-100 text-green-800' : 
-                      activeSalary.status === 'finalized' ? 'bg-blue-100 text-blue-800' : 
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <span className={`px-3 py-1 text-sm rounded-full ${activeSalary.status === 'paid' ? 'bg-green-100 text-green-800' :
+                        activeSalary.status === 'finalized' ? 'bg-blue-100 text-blue-800' :
+                          'bg-yellow-100 text-yellow-800'
+                      }`}>
                       {activeSalary.status.charAt(0).toUpperCase() + activeSalary.status.slice(1)}
                     </span>
                     {activeSalary.paymentDate && (
@@ -180,7 +266,7 @@ const EmployeeSalaryView = () => {
                     )}
                   </div>
                 </div>
-                
+
                 {/* Salary Summary */}
                 <div className="bg-gray-50 p-4 rounded-lg mb-6">
                   <div className="grid grid-cols-2 gap-4">
@@ -194,7 +280,9 @@ const EmployeeSalaryView = () => {
                     </div>
                   </div>
                 </div>
-                
+
+                {/* Rest of your existing components... */}
+                {/* Attendance Summary, Leave Summary, Salary Breakdown, etc. */}
                 {/* Attendance Summary */}
                 <div className="mb-6">
                   <h3 className="text-md font-semibold text-gray-700 mb-3">Attendance Summary</h3>
@@ -223,7 +311,7 @@ const EmployeeSalaryView = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Leave Summary */}
                 <div className="mb-6">
                   <h3 className="text-md font-semibold text-gray-700 mb-3">Leave Summary</h3>
@@ -252,7 +340,7 @@ const EmployeeSalaryView = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Salary Breakdown */}
                 <div className="mb-6">
                   <h3 className="text-md font-semibold text-gray-700 mb-3">Salary Breakdown</h3>
@@ -262,21 +350,21 @@ const EmployeeSalaryView = () => {
                         <p className="text-gray-700">Basic Salary</p>
                         <p className="font-medium text-gray-900">{formatCurrency(activeSalary.calculations.basicPayment)}</p>
                       </div>
-                      
+
                       <div className="p-4 bg-red-50">
                         <p className="text-gray-700 font-medium mb-2">Deductions</p>
-                        
+
                         <div className="ml-4 space-y-2">
                           <div className="flex justify-between">
                             <p className="text-gray-600">Absent/Late/Half-day</p>
                             <p className="font-medium text-red-600">-{formatCurrency(activeSalary.calculations.deductions.absences)}</p>
                           </div>
-                          
+
                           <div className="flex justify-between">
                             <p className="text-gray-600">Tax</p>
                             <p className="font-medium text-red-600">-{formatCurrency(activeSalary.calculations.deductions.tax)}</p>
                           </div>
-                          
+
                           {activeSalary.calculations.deductions.other > 0 && (
                             <div className="flex justify-between">
                               <p className="text-gray-600">Other Deductions</p>
@@ -285,7 +373,7 @@ const EmployeeSalaryView = () => {
                           )}
                         </div>
                       </div>
-                      
+
                       <div className="p-4 bg-gray-50 flex justify-between font-bold">
                         <p className="text-gray-800">Total Net Salary</p>
                         <p className="text-green-600">{formatCurrency(activeSalary.calculations.netSalary)}</p>
@@ -293,7 +381,7 @@ const EmployeeSalaryView = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Additional Notes */}
                 {activeSalary.notes && (
                   <div className="mb-6">
@@ -306,6 +394,8 @@ const EmployeeSalaryView = () => {
               </div>
             </div>
           )}
+
+
         </div>
       </div>
     </div>
