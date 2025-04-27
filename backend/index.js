@@ -11,6 +11,7 @@ import adminUserRoutes from "./routes/adminuser.route.js";
 import attendanceRoutes from "./routes/attendanceRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import leaveRequestRoutes from "./routes/leaveRequestRoutes.js";
+import helpRequestRoutes from "./routes/helpRequestRoutes.js";
 import cors from "cors";
 import { connectDB } from "./config/connectDB.js";
 import inquiryRoutes from "./routes/inquiryRoutes.js";
@@ -44,6 +45,7 @@ app.use("/api/admin/user", adminUserRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/leave-requests", leaveRequestRoutes);
+app.use("/api/help-requests", helpRequestRoutes);
 
 app.listen(8070, () => {
   connectDB();

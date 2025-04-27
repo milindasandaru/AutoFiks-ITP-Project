@@ -58,6 +58,12 @@ const SideBar = () => {
       name: "Help Center",
       icon: HiOutlinePhone,
     },
+    /*{
+      id: 7,
+      path: "/employee-dashboard/helpcenter/:id",
+      name: "Help Inquiry Details",
+      icon: HiOutlineTicket,
+    },*/
   ];
 
   return (

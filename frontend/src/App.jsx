@@ -17,6 +17,7 @@ import WorkSchedule from "./pages/employee/WorkSchedule";
 import Leaving from "./pages/employee/Leaving";
 import Earning from "./pages/employee/Earning";
 import Profile from "./pages/employee/Profile";
+import HelpCenter from "./pages/employee/HelpCenter";
 import CartPage from "./pages/user/CartPage";
 import StorePage from "./pages/user/StorePage";
 import SparePartViewPage from "./pages/user/SparePartViewPage";
@@ -173,6 +174,7 @@ function App() {
           <Route path="leaving" element={<Leaving />} />
           <Route path="earning" element={<Earning />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="helpcenter" element={<HelpCenter />} />
         </Route>
 
          

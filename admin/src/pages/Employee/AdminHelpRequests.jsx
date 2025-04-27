@@ -1,24 +1,15 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
-const EmployeeHelpCenter = () => {
+const AdminHelpRequests = () => {
   const [helpRequests, setHelpRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showNewRequestForm, setShowNewRequestForm] = useState(false);
-  const [newRequest, setNewRequest] = useState({
-    title: '',
-    description: '',
-    category: 'other',
-    priority: 'medium'
-  });
-  const [submitting, setSubmitting] = useState(false);
-  const [employeeInfo, setEmployeeInfo] = useState(null);
   const [activeRequest, setActiveRequest] = useState(null);
   const [newResponse, setNewResponse] = useState('');
   const [submittingResponse, setSubmittingResponse] = useState(false);
-  const navigate = useNavigate();
+  const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Base URL for API requests
   const API_BASE_URL = 'http://localhost:8070/api';
@@ -38,91 +29,31 @@ const EmployeeHelpCenter = () => {
     'closed': 'bg-gray-100 text-gray-800'
   };
 
-  // Fetch employee profile and help requests
+  // Fetch all help requests
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchRequests = async () => {
       setLoading(true);
       try {
-        // First get the employee profile using the authentication token
-        const profileResponse = await axios.get(`${API_BASE_URL}/employees/profile`, {
-          withCredentials: true
-        });
-        
-        if (!profileResponse.data.success) {
-          throw new Error(profileResponse.data.message || 'Failed to fetch employee profile');
-        }
-        
-        const employeeData = profileResponse.data.employee;
-        setEmployeeInfo(employeeData);
-        
-        // Then fetch help requests for this employee
-        const requestsResponse = await axios.get(
-          `${API_BASE_URL}/help-requests/employee`,
+        const response = await axios.get(
+          `${API_BASE_URL}/help-requests`,
           { withCredentials: true }
         );
         
         // Ensure help requests is always an array
-        const requestsData = Array.isArray(requestsResponse.data) ? requestsResponse.data : [];
+        const requestsData = Array.isArray(response.data) ? response.data : [];
         
         setHelpRequests(requestsData);
         setError(null);
       } catch (err) {
-        console.error('Error fetching data:', err);
-        
-        // Handle authentication errors
-        if (err.response && err.response.status === 401) {
-          setError('Authentication required. Please log in again.');
-          setTimeout(() => navigate('/login'), 2000);
-        } else {
-          setError(err.message || 'Failed to load data. Please try again.');
-        }
+        console.error('Error fetching help requests:', err);
+        setError(err.message || 'Failed to load help requests. Please try again.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, [API_BASE_URL, navigate]);
-
-  // Handle new request input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewRequest({
-      ...newRequest,
-      [name]: value
-    });
-  };
-
-  // Submit new help request
-  const handleSubmitRequest = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    
-    try {
-      const response = await axios.post(
-        `${API_BASE_URL}/help-requests`,
-        newRequest,
-        { withCredentials: true }
-      );
-      
-      // Add the new request to the state
-      setHelpRequests([response.data, ...helpRequests]);
-      
-      // Reset form and hide it
-      setNewRequest({
-        title: '',
-        description: '',
-        category: 'other',
-        priority: 'medium'
-      });
-      setShowNewRequestForm(false);
-    } catch (err) {
-      console.error('Error submitting help request:', err);
-      setError('Failed to submit request. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
+    fetchRequests();
+  }, [API_BASE_URL]);
 
   // Fetch request details
   const fetchRequestDetails = async (id) => {
@@ -150,7 +81,8 @@ const EmployeeHelpCenter = () => {
         `${API_BASE_URL}/help-requests/${activeRequest._id}/responses`,
         { 
           text: newResponse,
-          userName: employeeInfo?.name || 'Employee'
+          userName: 'Admin',
+          isAdmin: true
         },
         { withCredentials: true }
       );
@@ -172,6 +104,51 @@ const EmployeeHelpCenter = () => {
     }
   };
 
+  // Update request status
+  const updateRequestStatus = async (status) => {
+    if (!activeRequest) return;
+    
+    try {
+      const response = await axios.patch(
+        `${API_BASE_URL}/help-requests/${activeRequest._id}/status`,
+        { 
+          status,
+          isAdmin: true 
+        },
+        { withCredentials: true }
+      );
+      
+      // Update the active request with the new status
+      setActiveRequest(response.data);
+      
+      // Also update the request in the list
+      setHelpRequests(helpRequests.map(req => 
+        req._id === activeRequest._id ? response.data : req
+      ));
+    } catch (err) {
+      console.error('Error updating status:', err);
+      setError('Failed to update status. Please try again.');
+    }
+  };
+
+  // Filter help requests based on status
+  const filteredRequests = helpRequests.filter(request => {
+    if (filter === 'all') return true;
+    return request.status === filter;
+  });
+
+  // Search functionality
+  const searchedRequests = filteredRequests.filter(request => {
+    if (!searchTerm.trim()) return true;
+    
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      request.title.toLowerCase().includes(searchLower) ||
+      request.description.toLowerCase().includes(searchLower) ||
+      (request.employeeId?.name && request.employeeId.name.toLowerCase().includes(searchLower))
+    );
+  });
+
   // Format date
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString();
@@ -181,32 +158,16 @@ const EmployeeHelpCenter = () => {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        <div className="ml-4 text-lg font-semibold text-gray-700">Loading help center...</div>
+        <div className="ml-4 text-lg font-semibold text-gray-700">Loading help requests...</div>
       </div>
     );
   }
 
   return (
     <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Help Center</h1>
-            {employeeInfo && (
-              <p className="text-gray-600 mt-1">
-                Welcome, {employeeInfo.name}. How can we help you today?
-              </p>
-            )}
-          </div>
-          <button
-            onClick={() => setShowNewRequestForm(!showNewRequestForm)}
-            className="mt-4 md:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-300 flex items-center"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-            </svg>
-            {showNewRequestForm ? 'Cancel' : 'New Request'}
-          </button>
+          <h1 className="text-2xl font-bold text-gray-800">Help Request Management</h1>
         </div>
         
         {error && (
@@ -215,100 +176,35 @@ const EmployeeHelpCenter = () => {
           </div>
         )}
         
-        {/* New Help Request Form */}
-        {showNewRequestForm && (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 className="text-lg font-semibold mb-4">Submit a New Help Request</h2>
-            <form onSubmit={handleSubmitRequest}>
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Title*</label>
-                  <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    value={newRequest.title}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Brief summary of your question"
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Description*</label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    value={newRequest.description}
-                    onChange={handleInputChange}
-                    required
-                    rows="4"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Please provide details about your question or issue"
-                  ></textarea>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <select
-                      id="category"
-                      name="category"
-                      value={newRequest.category}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option value="technical">Technical</option>
-                      <option value="hr">HR</option>
-                      <option value="operations">Operations</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                    <select
-                      id="priority"
-                      name="priority"
-                      value={newRequest.priority}
-                      onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <div className="flex justify-end pt-4">
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition duration-300 flex items-center"
-                  >
-                    {submitting ? (
-                      <>
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Submitting...
-                      </>
-                    ) : "Submit Request"}
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        )}
-        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Help Requests List */}
           <div className={`bg-white rounded-lg shadow-md overflow-hidden ${activeRequest ? 'hidden md:block md:col-span-1' : 'col-span-3'}`}>
             <div className="p-4 bg-blue-50 border-b border-blue-100">
-              <h2 className="text-lg font-semibold text-gray-800">Your Help Requests</h2>
+              <div className="flex flex-col md:flex-row justify-between">
+                <h2 className="text-lg font-semibold text-gray-800 mb-3 md:mb-0">Help Requests</h2>
+                <div className="flex space-x-2">
+                  <select
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    className="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="open">Open</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                </div>
+              </div>
+              <div className="mt-3">
+                <input
+                  type="text"
+                  placeholder="Search requests..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                />
+              </div>
             </div>
             
             {helpRequests.length === 0 ? (
@@ -316,17 +212,15 @@ const EmployeeHelpCenter = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="mt-4 text-gray-600">You haven't submitted any help requests yet.</p>
-                <button
-                  onClick={() => setShowNewRequestForm(true)}
-                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-300"
-                >
-                  Submit Your First Request
-                </button>
+                <p className="mt-4 text-gray-600">No help requests available.</p>
+              </div>
+            ) : searchedRequests.length === 0 ? (
+              <div className="p-8 text-center">
+                <p className="text-gray-600">No requests match your search criteria.</p>
               </div>
             ) : (
               <ul className="divide-y divide-gray-200 max-h-[calc(100vh-250px)] overflow-y-auto">
-                {helpRequests.map((request) => (
+                {searchedRequests.map((request) => (
                   <li 
                     key={request._id} 
                     className={`p-4 hover:bg-gray-50 transition duration-150 cursor-pointer ${activeRequest && activeRequest._id === request._id ? 'bg-blue-50' : ''}`}
@@ -347,7 +241,10 @@ const EmployeeHelpCenter = () => {
                     <p className="text-gray-600 mb-2 line-clamp-2">{request.description}</p>
                     
                     <div className="text-sm text-gray-500">
-                      <span>Created: {formatDate(request.createdAt)}</span>
+                      <div className="flex justify-between">
+                        <span>Created: {formatDate(request.createdAt)}</span>
+                        <span>By: {request.employeeId?.name || 'Unknown'}</span>
+                      </div>
                       
                       {request.responses && request.responses.length > 0 && (
                         <div className="mt-2 text-xs">
@@ -377,19 +274,63 @@ const EmployeeHelpCenter = () => {
               <div className="p-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
                   <h1 className="text-xl font-bold text-gray-800">{activeRequest.title}</h1>
-                  <div className={`mt-2 md:mt-0 px-3 py-1 rounded-full text-sm font-medium ${statusColors[activeRequest.status]}`}>
-                    {activeRequest.status.replace('-', ' ')}
+                  <div className="mt-3 md:mt-0 flex space-x-2">
+                    {activeRequest.status !== 'closed' && (
+                      <div className="relative group">
+                        <button className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                          Update Status
+                        </button>
+                        <div className="absolute right-0 z-10 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block">
+                          {activeRequest.status !== 'open' && (
+                            <button 
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                              onClick={() => updateRequestStatus('open')}
+                            >
+                              Mark as Open
+                            </button>
+                          )}
+                          {activeRequest.status !== 'in-progress' && (
+                            <button 
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                              onClick={() => updateRequestStatus('in-progress')}
+                            >
+                              Mark as In Progress
+                            </button>
+                          )}
+                          {activeRequest.status !== 'resolved' && (
+                            <button 
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                              onClick={() => updateRequestStatus('resolved')}
+                            >
+                              Mark as Resolved
+                            </button>
+                          )}
+                          {activeRequest.status !== 'closed' && (
+                            <button 
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                              onClick={() => updateRequestStatus('closed')}
+                            >
+                              Close Request
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    <span className={`px-3 py-1 rounded-md text-sm font-medium ${statusColors[activeRequest.status]}`}>
+                      {activeRequest.status.replace('-', ' ')}
+                    </span>
                   </div>
                 </div>
                 
                 <div className="flex flex-col md:flex-row justify-between text-sm text-gray-500 mb-4">
                   <div>
-                    <span>Created: {formatDate(activeRequest.createdAt)}</span>
+                    <div><strong>Employee:</strong> {activeRequest.employeeId?.name || 'Unknown'}</div>
+                    <div><strong>Created:</strong> {formatDate(activeRequest.createdAt)}</div>
                     {activeRequest.resolvedAt && (
-                      <span className="ml-4">Resolved: {formatDate(activeRequest.resolvedAt)}</span>
+                      <div><strong>Resolved:</strong> {formatDate(activeRequest.resolvedAt)}</div>
                     )}
                   </div>
-                  <div className="mt-2 md:mt-0">
+                  <div className="mt-3 md:mt-0">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${categoryColors[activeRequest.category]}`}>
                       {activeRequest.category}
                     </span>
@@ -480,4 +421,4 @@ const EmployeeHelpCenter = () => {
   );
 };
 
-export default EmployeeHelpCenter;
+export default AdminHelpRequests;
