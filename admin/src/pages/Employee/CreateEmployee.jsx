@@ -93,8 +93,8 @@ const CreateEmployee = () => {
     // Salary validation
     if (!formData.salary) {
       errors.salary = "Salary is required";
-    } else if (Number(formData.salary) < 50000) {
-      errors.salary = "Salary must be at least LKR 50,000";
+    } else if (Number(formData.salary) < 35000) {
+      errors.salary = "Salary must be at least LKR 35,000";
     }
     
     setFormErrors(errors);
@@ -267,8 +267,8 @@ const CreateEmployee = () => {
             value={formData.salary}
             onChange={handleChange}
             className={`w-full p-2 border rounded ${formErrors.salary ? 'border-red-500' : 'border-gray-300'}`}
-            placeholder="Minimum LKR 50,000"
-            min="50000"
+            placeholder="Minimum LKR 35,000"
+            min="35000"
           />
           {formErrors.salary && <p className="text-red-500 text-sm mt-1">{formErrors.salary}</p>}
         </div>

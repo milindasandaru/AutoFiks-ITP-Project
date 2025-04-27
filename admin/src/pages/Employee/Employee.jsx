@@ -77,13 +77,13 @@ const Employee = () => {
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
           <HiOutlineUserPlus /> Ticket Detail
-        </Link>
+        </Link>*/}
         <Link
-          to="/salaryManagementAdmin"
+          to="/adminSalaryManagement"
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
         >
           <HiOutlineUserPlus /> Salary Management
-        </Link>*/}
+        </Link>
         <Link
           to="/attendancePage"
           className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2"

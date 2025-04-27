@@ -17,6 +17,7 @@ import AttendanceReport from "./pages/Employee/AttendanceReport";
 import TaskManagement from "./pages/Employee/TaskManagement";
 import LeaveManagementAdmin from "./pages/Employee/LeaveManagementAdmin";
 import AdminHelpRequests from "./pages/Employee/AdminHelpRequests";
+import AdminSalaryManagement from "./pages/Employee/AdminSalaryManagement";
 import CreateNewSparePart from "./pages/SpareParts/CreateNewSparePart";
 import UpdateSparePart from "./pages/SpareParts/UpdateSparePart";
 import "./App.css";
@@ -74,6 +75,7 @@ function App() {
             <Route path="taskManagement" element={<TaskManagement />} />
             <Route path="leaveManagementAdmin" element={<LeaveManagementAdmin />} />
             <Route path="adminHelpRequests" element={<AdminHelpRequests />} />
+            <Route path="adminSalaryManagement" element={<AdminSalaryManagement />} />
           </Route>
         </Routes>
         <Toaster />
