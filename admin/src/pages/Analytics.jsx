@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 const AdminStats = () => {
@@ -37,35 +38,57 @@ const AdminStats = () => {
 
     // Title
     pdf.setFontSize(18);
-    pdf.text("User Statistics Report", 20, 20);
+    pdf.setFont("helvetica", "bold");
+    pdf.text("User Statistics Report", 14, 20);
 
-    // Stats section
-    pdf.setFontSize(12);
-    let y = 40;
-    pdf.text(`Total Users: ${stats.totalUsers}`, 20, y);
-    y += 10;
-    pdf.text(`Verified Users: ${stats.verified}`, 20, y);
-    y += 10;
-    pdf.text(`Unverified Users: ${stats.unverified}`, 20, y);
-    y += 10;
-    pdf.text(`Active Users (last 6 months): ${stats.active}`, 20, y);
-    y += 10;
-    pdf.text(`New Users This Month: ${stats.newThisMonth}`, 20, y);
-    y += 20;
+    // Horizontal line under title
+    pdf.setLineWidth(0.5);
+    pdf.line(14, 24, 196, 24);
 
-    // Prediction section
+    // Table for User Statistics
+    const statTableColumns = ["Metric", "Value"];
+    const statTableRows = [
+      ["Total Users", stats.totalUsers],
+      ["Verified Users", stats.verified],
+      ["Unverified Users", stats.unverified],
+      ["Active Users (last 6 months)", stats.active],
+      ["New Users This Month", stats.newThisMonth],
+    ];
+
+    autoTable(pdf, {
+      head: [statTableColumns],
+      body: statTableRows,
+      startY: 30,
+      styles: { fontSize: 12, cellPadding: 4 },
+      headStyles: { fillColor: [52, 152, 219] }, // blue header
+    });
+
+    // Growth Prediction Section (styled box)
+    let finalY = pdf.lastAutoTable.finalY + 10;
     pdf.setFontSize(14);
-    pdf.text("Growth Prediction", 20, y);
-    y += 10;
+    pdf.setFont("helvetica", "bold");
+    pdf.text("Growth Prediction", 14, finalY);
+
+    pdf.setDrawColor(0); // Black border
+    pdf.setFillColor(240, 248, 255); // Light blue background
+    pdf.rect(14, finalY + 4, 182, 12, "F"); // Background box
+
     pdf.setFontSize(12);
+    pdf.setFont("helvetica", "normal");
+    pdf.setTextColor(0);
     pdf.text(
       `Projected Growth Next Month: ${predictedGrowth.toFixed(2)}%`,
       20,
-      y
+      finalY + 13
     );
 
-    // Save the PDF
-    pdf.save("user_report.pdf");
+    // Footer
+    pdf.setFontSize(10);
+    pdf.setTextColor(150);
+    pdf.text("Generated on: " + new Date().toLocaleDateString(), 14, 285);
+
+    // Save PDF
+    pdf.save("user_statistics_report.pdf");
   };
 
   return (
