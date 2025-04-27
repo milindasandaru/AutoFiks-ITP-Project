@@ -20,7 +20,7 @@ const Header = () => {
     <div className='flex justify-between items-center p-4'>
 
       <div className='mt-2'>
-        <h1 className='text-lg font-bold'>Welcome, Sams</h1>
+        <h1 className='text-lg font-bold'>Welcome, Admin</h1>
         <p className='text-gray-500 text-sm font-medium'>{formattedDate}</p>
       </div>
 

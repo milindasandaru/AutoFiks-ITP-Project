@@ -116,7 +116,7 @@ const SparePartViewPage = () => {
                 sparePartId={sparePart._id}
               />
               <Link
-                to="/cart"
+                to="/overview/cart"
                 className="block bg-slate-200 border-gray-500 py-2 rounded-md w-full mt-2 text-center text-slate-600 hover:text-slate-700"
               >
                 <IoCartOutline className="inline-block mr-2 size-5" />
