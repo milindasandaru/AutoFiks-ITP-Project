@@ -133,7 +133,7 @@ const SparePartViewPage = () => {
                 key={part._id}
                 className="min-w-[220px] bg-white border border-gray-200 rounded-md shadow-sm p-3 hover:shadow-md transition"
               >
-                <Link to={`/spare-part/${part._id}`}>
+                <Link to={`/overview/spare-part/${part._id}`}>
                   <img
                     src={
                       part.image
