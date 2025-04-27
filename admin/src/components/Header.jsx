@@ -21,7 +21,7 @@ const Header = () => {
 
       <div className='mt-2'>
         <h1 className='text-lg font-bold'>Welcome, Admin</h1>
-        <p className='text-gray-500 text-sm font-medium'>{formattedDate}</p>
+        {/*<p className='text-gray-500 text-sm font-medium'>{formattedDate}</p>*/}
       </div>
 
       <div className='flex items-center space-x-5'>
