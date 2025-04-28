@@ -13,6 +13,11 @@ import adminUserRoutes from "./routes/adminuser.route.js";
 import attendanceRoutes from "./routes/attendanceRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import leaveRequestRoutes from "./routes/leaveRequestRoutes.js";
+import helpRequestRoutes from "./routes/helpRequestRoutes.js";
+import salaryRoutes from "./routes/salaryRoutes.js";
+import adminDashboardRoutes from "./routes/admindashboardRoutes.js";
+import employeeDashboardRoutes from "./routes/employeeDashboardRoutes.js";
+import userDashboardRoutes from "./routes/userDashboardRoutes.js";
 import cors from "cors";
 import { connectDB } from "./config/connectDB.js";
 import inquiryRoutes from "./routes/inquiryRoutes.js";
@@ -74,6 +79,11 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/leave-requests", leaveRequestRoutes);
+app.use("/api/help-requests", helpRequestRoutes);
+app.use("/api/salary", salaryRoutes);
+app.use("/api/admin-dashboard", adminDashboardRoutes);
+app.use('/api/employee-dashboard', employeeDashboardRoutes);
+app.use('/api/user-dashboard', userDashboardRoutes);
 
 // Start server
 server.listen(PORT, () => {
