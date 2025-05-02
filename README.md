@@ -11,7 +11,7 @@
 
 ### Team Members
 
-| Name | Student ID | Role |
+| Name | Student ID | Contribution |
 |------|-----------|------|
 | Senarath S A M S (Leader) | IT23284784 | Employee Management |
 | Fernando P T A N | IT23271364 | User Management |
