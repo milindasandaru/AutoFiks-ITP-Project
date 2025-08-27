@@ -1,3 +1,8 @@
+---
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
 # AutoFiks - Spare Part and Automobile Service Management System
 
 **AutoFiks** is a comprehensive web-based system designed to streamline automobile service center operations, spare parts inventory management, and customer service interactions. The platform connects customers, employees, and administrators in a seamless digital environment, enhancing operational efficiency and customer satisfaction.
@@ -130,9 +135,38 @@ The customer support system ensures excellent service:
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
-- MongoDB
-- npm or yarn
+
+---
+
+## API Overview
+
+The backend exposes RESTful APIs for all major modules:
+
+- **Authentication:** `/api/auth` (login, register, JWT)
+- **Employee Management:** `/api/employees` (CRUD, attendance, leave, salary)
+- **Admin Dashboard:** `/api/admindashboard`
+- **Attendance:** `/api/attendance`
+- **Tasks:** `/api/tasks`
+- **Inventory/Spare Parts:** `/api/spareparts`
+- **Booking/Appointments:** `/api/booking`
+- **Help Requests:** `/api/helprequests`
+- **Inquiries:** `/api/inquiries`
+- **User Dashboard:** `/api/userdashboard`
+
+Refer to the `backend/routes/` folder for all available endpoints and their usage.
+
+---
+
+## Testing
+
+To run backend tests (if available):
+
+```sh
+cd backend
+npm test
+```
+
+For frontend testing, use your preferred React testing library (e.g., Jest, React Testing Library).
 
 
 
