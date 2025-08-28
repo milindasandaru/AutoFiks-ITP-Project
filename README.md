@@ -1,8 +1,11 @@
+<<<<<<< HEAD
+=======
 ---
 
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
+>>>>>>> origin/main
 # AutoFiks - Spare Part and Automobile Service Management System
 
 **AutoFiks** is a comprehensive web-based system designed to streamline automobile service center operations, spare parts inventory management, and customer service interactions. The platform connects customers, employees, and administrators in a seamless digital environment, enhancing operational efficiency and customer satisfaction.
@@ -135,12 +138,119 @@ The customer support system ensures excellent service:
 
 ### Prerequisites
 
+<<<<<<< HEAD
+- Node.js (v14 or higher)
+- MongoDB
+- npm or yarn
+
+### Backend Setup
+
+1. Navigate to the backend directory:
+  ```sh
+  cd backend
+  ```
+2. Install dependencies:
+  ```sh
+  npm install
+  ```
+3. Create a `.env` file in the backend directory (see Environment Variables section below).
+4. Start the backend server:
+  ```sh
+  npm start
+  ```
+  The backend will run on [http://localhost:5000](http://localhost:5000) by default.
+
+### Frontend Setup
+
+#### Admin Frontend
+1. Navigate to the admin directory:
+  ```sh
+  cd admin
+  ```
+2. Install dependencies:
+  ```sh
+  npm install
+  ```
+3. (Optional) Create a `.env` file for environment-specific variables (e.g., API base URL):
+  ```env
+  VITE_API_URL=http://localhost:5000/api
+  ```
+4. Start the admin frontend:
+  ```sh
+  npm run dev
+  ```
+  The admin dashboard will run on [http://localhost:5173](http://localhost:5173) by default.
+
+#### User Frontend
+1. Navigate to the frontend directory:
+  ```sh
+  cd frontend
+  ```
+2. Install dependencies:
+  ```sh
+  npm install
+  ```
+3. (Optional) Create a `.env` file for environment-specific variables (e.g., API base URL):
+  ```env
+  VITE_API_URL=http://localhost:5000/api
+  ```
+4. Start the user frontend:
+  ```sh
+  npm run dev
+  ```
+  The user-facing frontend will run on [http://localhost:5174](http://localhost:5174) or another available port.
+
+### Environment Variables
+
+#### Backend `.env` example:
+```env
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+EMAIL_USER=your_email_user
+EMAIL_PASS=your_email_password
+EMAIL_SERVICE=brevo_or_mailtrap
+# Add any other required variables as needed
+```
+
+#### Frontend/Admin `.env` example:
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+---
+
+## Running the Application
+
+1. Start MongoDB (if not running as a service).
+2. Start the backend server:
+  ```sh
+  cd backend
+  npm start
+  ```
+3. In a new terminal, start the admin frontend:
+  ```sh
+  cd admin
+  npm run dev
+  ```
+4. In another terminal, start the user frontend:
+  ```sh
+  cd frontend
+  npm run dev
+  ```
+
+---
+
+## API Documentation
+
+The backend exposes RESTful APIs for all major modules. You can explore the endpoints in the `backend/routes/` directory. Common endpoints include:
+=======
 
 ---
 
 ## API Overview
 
 The backend exposes RESTful APIs for all major modules:
+>>>>>>> origin/main
 
 - **Authentication:** `/api/auth` (login, register, JWT)
 - **Employee Management:** `/api/employees` (CRUD, attendance, leave, salary)
@@ -153,6 +263,12 @@ The backend exposes RESTful APIs for all major modules:
 - **Inquiries:** `/api/inquiries`
 - **User Dashboard:** `/api/userdashboard`
 
+<<<<<<< HEAD
+> For detailed request/response formats, refer to the controller files in `backend/controllers/` and the route files in `backend/routes/`.
+
+---
+
+=======
 Refer to the `backend/routes/` folder for all available endpoints and their usage.
 
 ---
@@ -168,5 +284,6 @@ npm test
 
 For frontend testing, use your preferred React testing library (e.g., Jest, React Testing Library).
 
+>>>>>>> origin/main
 
 
