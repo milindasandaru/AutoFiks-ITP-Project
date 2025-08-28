@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+=======
+---
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+>>>>>>> origin/main
 # AutoFiks - Spare Part and Automobile Service Management System
 
 **AutoFiks** is a comprehensive web-based system designed to streamline automobile service center operations, spare parts inventory management, and customer service interactions. The platform connects customers, employees, and administrators in a seamless digital environment, enhancing operational efficiency and customer satisfaction.
@@ -130,6 +138,7 @@ The customer support system ensures excellent service:
 
 ### Prerequisites
 
+<<<<<<< HEAD
 - Node.js (v14 or higher)
 - MongoDB
 - npm or yarn
@@ -234,6 +243,14 @@ VITE_API_URL=http://localhost:5000/api
 ## API Documentation
 
 The backend exposes RESTful APIs for all major modules. You can explore the endpoints in the `backend/routes/` directory. Common endpoints include:
+=======
+
+---
+
+## API Overview
+
+The backend exposes RESTful APIs for all major modules:
+>>>>>>> origin/main
 
 - **Authentication:** `/api/auth` (login, register, JWT)
 - **Employee Management:** `/api/employees` (CRUD, attendance, leave, salary)
@@ -246,9 +263,27 @@ The backend exposes RESTful APIs for all major modules. You can explore the endp
 - **Inquiries:** `/api/inquiries`
 - **User Dashboard:** `/api/userdashboard`
 
+<<<<<<< HEAD
 > For detailed request/response formats, refer to the controller files in `backend/controllers/` and the route files in `backend/routes/`.
 
 ---
 
+=======
+Refer to the `backend/routes/` folder for all available endpoints and their usage.
+
+---
+
+## Testing
+
+To run backend tests (if available):
+
+```sh
+cd backend
+npm test
+```
+
+For frontend testing, use your preferred React testing library (e.g., Jest, React Testing Library).
+
+>>>>>>> origin/main
 
 
