@@ -1,4 +1,4 @@
-# AutoFiks - Spare Part and Automobile Service Management System
+# AutoFiks - Spare Part and Automobile Service Management System (SPAASMS)
 
 AutoFiks is a comprehensive web-based system designed to streamline automobile service center operations, spare parts inventory management, and customer service interactions. The platform connects customers, employees, and administrators in a seamless digital environment, enhancing operational efficiency and customer satisfaction.
 
