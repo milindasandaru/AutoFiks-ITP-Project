@@ -2,6 +2,7 @@ import { Employee } from "../models/Employee.js";
 import Attendance from "../models/Attendance.js";
 import QRCode from "qrcode";
 import { v4 as uuidv4 } from "uuid";
+import bcryptjs from "bcryptjs";
 
 // Auto generated employee Id
 const generateEmployeeId = async () => {
@@ -21,12 +22,16 @@ export const createEmployee = async (req, res) => {
   try {
     const employeeId = await generateEmployeeId();
     
+    // Hash the password before saving
+    const hashedPassword = await bcryptjs.hash(req.body.password, 10);
+    
     // Generate QR code data URL
     const qrCodeDataURL = await QRCode.toDataURL(employeeId);
     
     // Create Employee with the actual QR code data URL
     const employee = new Employee({ 
       ...req.body, 
+      password: hashedPassword, // Use hashed password
       employeeId, 
       qrCode: qrCodeDataURL // Store the actual QR code data URL
     });
@@ -35,6 +40,7 @@ export const createEmployee = async (req, res) => {
     
     res.status(201).json({
       ...employee.toObject(),
+      password: undefined, // Don't return password
       qrCode: qrCodeDataURL
     });
   } catch (error) {

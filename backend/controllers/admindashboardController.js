@@ -2,7 +2,7 @@
 import { Employee } from "../models/Employee.js";
 import LeaveRequest from "../models/LeaveRequest.js";
 import SparePart from "../models/sparepart.model.js";
-import Booking from "../models/booking.js";
+import Booking from "../models/Booking.js";
 import Attendance from "../models/Attendance.js";
 import HelpRequest from "../models/HelpRequestModel.js";
 import Salary from "../models/SalaryModel.js";

@@ -43,10 +43,13 @@ const Employee = () => {
     try {
       await deleteEmployee(id);
       setDeleteConfirm(null);
-      fetchEmployees();
+      setError(""); // Clear any previous errors
+      // Remove the deleted employee from the state immediately
+      setEmployees(employees.filter(emp => emp._id !== id));
     } catch (error) {
       console.error("Error deleting employee:", error);
       setError("Failed to delete employee. Please try again.");
+      setDeleteConfirm(null); // Reset the confirmation state on error
     }
   };
 

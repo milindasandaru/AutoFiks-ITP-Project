@@ -1,6 +1,6 @@
 import express from "express";
 import * as bookingController from "../controllers/bookingController.js";
-import Booking from "../models/booking.js";
+import Booking from "../models/Booking.js";
 import {User} from "../models/user.model.js";
 import { brevoTransporter, sender } from '../mails/brevo.config.js';
 
