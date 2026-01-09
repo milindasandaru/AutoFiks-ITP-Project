@@ -113,11 +113,12 @@ export const deleteEmployee = async (req, res) => {
         return res.status(404).json({ message: "Employee not found" });
       }
       
-      // Also delete related attendance records
-      await Attendance.deleteMany({ employeeId: employee.employeeId });
+      // Delete related attendance records using the MongoDB _id, not the custom employeeId
+      await Attendance.deleteMany({ employeeId: req.params.id });
       
       res.status(200).json({ message: "Employee and related records deleted successfully" });
     } catch (error) {
+      console.error("Delete employee error:", error);
       res.status(500).json({ message: error.message });
     }
 };

@@ -49,6 +49,27 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Email Verification Route - only accessible if authenticated but not verified
+const EmailVerificationRoute = ({ children }) => {
+  const { isAuthenticated, user, isCheckingAuth } = useAuthStore();
+
+  if (isCheckingAuth) {
+    return <div className="text-center p-10">Checking authentication...</div>;
+  }
+
+  // Only show verification page if user is authenticated but not verified
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user.isVerified) {
+    const { role } = useAuthStore.getState();
+    return role === "employee" ? <Navigate to="/employee-dashboard" replace /> : <Navigate to="/overview" replace />;
+  }
+
+  return children;
+};
+
 // Redirect authenticated users to appropriate home page
 const RedirectAuthenticatedUser = ({ children }) => {
   const { isAuthenticated, user, role } = useAuthStore();
@@ -105,7 +126,10 @@ function App() {
             </RedirectAuthenticatedUser>
           }
         />
-        <Route path="/verify-email" element={<EmailVerificationPage />} />
+        <Route 
+          path="/verify-email" 
+          element={<EmailVerificationRoute><EmailVerificationPage /></EmailVerificationRoute>} 
+        />
         <Route
           path="/forgot-password"
           element={

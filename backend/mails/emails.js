@@ -86,6 +86,12 @@ export const sendResetSuccessEmail = async (email) => {
 
 export const sendVerificationEmail = async (email, verificationToken) => {
   try {
+    // Print OTP to backend terminal for development/testing
+    console.log(`\n${"=".repeat(50)}`);
+    console.log(`📧 VERIFICATION OTP FOR: ${email}`);
+    console.log(`🔐 OTP CODE: ${verificationToken}`);
+    console.log(`${"=".repeat(50)}\n`);
+    
     const mailOptions = {
       from: sender.email,
       to: email,

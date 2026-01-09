@@ -19,6 +19,7 @@ const Employee = () => {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   useEffect(() => {
@@ -41,14 +42,19 @@ const Employee = () => {
 
   const handleDelete = async (id) => {
     try {
-      await deleteEmployee(id);
+      const result = await deleteEmployee(id);
+      console.log("Delete successful:", result);
       setDeleteConfirm(null);
       setError(""); // Clear any previous errors
+      setSuccessMessage("Employee deleted successfully!");
       // Remove the deleted employee from the state immediately
       setEmployees(employees.filter(emp => emp._id !== id));
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Error deleting employee:", error);
-      setError("Failed to delete employee. Please try again.");
+      const errorMessage = error.response?.data?.message || error.message || "Failed to delete employee. Please try again.";
+      setError(errorMessage);
       setDeleteConfirm(null); // Reset the confirmation state on error
     }
   };
@@ -127,6 +133,12 @@ const Employee = () => {
           </div>
         </div>
       </div>
+
+      {successMessage && (
+        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-4">
+          {successMessage}
+        </div>
+      )}
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">

@@ -2,6 +2,9 @@ import axios from "axios";
 
 const API_URL = "http://localhost:8070/api/employees";
 
+// Configure axios to send credentials (cookies) with requests
+axios.defaults.withCredentials = true;
+
 // Add error handling and response validation
 export const createEmployee = async (employeeData) => {
   try {
@@ -46,9 +49,11 @@ export const updateEmployee = async (id, employeeData) => {
 export const deleteEmployee = async (id) => {
   try {
     const response = await axios.delete(`${API_URL}/${id}`);
-    return response;
+    return response.data;
   } catch (error) {
     console.error(`Error deleting employee with ID ${id}:`, error);
+    console.error('Response:', error.response?.data);
+    console.error('Status:', error.response?.status);
     throw error;
   }
 };
