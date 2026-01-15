@@ -6,7 +6,8 @@ import {
   getSalaryById,
   getAllSalaries,
   updateSalaryStatus,
-  generateTestSalaryData
+  generateTestSalaryData,
+  deleteSalary
 } from "../controllers/salaryController.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 
@@ -23,6 +24,7 @@ router.get("/detail/:id", getSalaryById);
 router.post("/generate", generateSalary);
 router.get("/all", getAllSalaries);
 router.patch("/:id/status", updateSalaryStatus);
+router.delete("/:id", deleteSalary);
 
 // Test data generation route (for demo purposes)
 router.post("/generate-test-data", generateTestSalaryData);

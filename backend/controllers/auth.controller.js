@@ -160,8 +160,15 @@ export const login = async (req, res) => {
           .status(400)
           .json({ success: false, message: "Invalid credentials" });
       }
+      
+      console.log("Employee found:", mail);
+      console.log("Password from request:", password);
+      console.log("Stored password hash:", user.password);
+      
       // Compare hashed password using bcryptjs
       const isPasswordValid = await bcryptjs.compare(password, user.password);
+      console.log("Password comparison result:", isPasswordValid);
+      
       if (!isPasswordValid) {
         console.log("Employee password invalid");
         return res

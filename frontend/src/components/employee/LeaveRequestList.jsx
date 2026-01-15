@@ -6,6 +6,7 @@ const LeaveRequestList = ({ refreshTrigger }) => {
   const [leaveRequests, setLeaveRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedRequest, setSelectedRequest] = useState(null);
   
   const statusColors = {
     pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
@@ -161,6 +162,12 @@ const LeaveRequestList = ({ refreshTrigger }) => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <button
+                    onClick={() => setSelectedRequest(request)}
+                    className="text-blue-600 hover:text-blue-900 mr-3"
+                  >
+                    View
+                  </button>
                   {request.status === 'pending' && (
                     <button
                       onClick={() => handleDeleteRequest(request._id)}
@@ -175,6 +182,79 @@ const LeaveRequestList = ({ refreshTrigger }) => {
           </tbody>
         </table>
       </div>
+
+      {/* Leave Request Detail Modal */}
+      {selectedRequest && (
+        <div className="fixed inset-0 bg-white bg-opacity-75 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Leave Request Details
+                </h3>
+                <button
+                  onClick={() => setSelectedRequest(null)}
+                  className="text-gray-400 hover:text-gray-500"
+                >
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">Leave Information</h4>
+                  <p className="text-sm text-gray-900 mb-2">
+                    <span className="font-medium">Type:</span> {leaveTypeLabels[selectedRequest.leaveType]}
+                  </p>
+                  <p className="text-sm text-gray-900 mb-2">
+                    <span className="font-medium">Period:</span> {formatDate(selectedRequest.startDate)} - {formatDate(selectedRequest.endDate)}
+                  </p>
+                  <p className="text-sm text-gray-900">
+                    <span className="font-medium">Duration:</span> {selectedRequest.totalDays} {selectedRequest.totalDays === 1 ? 'day' : 'days'}
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">Status</h4>
+                  <span className={`px-3 py-1 inline-flex text-sm rounded-full font-semibold ${statusColors[selectedRequest.status]}`}>
+                    {selectedRequest.status.charAt(0).toUpperCase() + selectedRequest.status.slice(1)}
+                  </span>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Requested on {formatDate(selectedRequest.createdAt)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h4 className="text-sm font-medium text-gray-500 mb-2">Reason for Leave</h4>
+                <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">
+                  {selectedRequest.reason}
+                </p>
+              </div>
+
+              {selectedRequest.adminRemarks && (
+                <div className="mb-6">
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">Admin Remarks</h4>
+                  <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">
+                    {selectedRequest.adminRemarks}
+                  </p>
+                </div>
+              )}
+
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setSelectedRequest(null)}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

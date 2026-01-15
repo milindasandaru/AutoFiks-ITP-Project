@@ -32,6 +32,9 @@ export const markAttendance = async (req, res) => {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
+    // Anti-double-scan: Check if a scan was recorded in the last 2 seconds
+    const twoSecondsAgo = new Date(Date.now() - 2000);
+    
     let attendance = await Attendance.findOne({
       employeeId: employee._id,
       createdAt: {
@@ -39,6 +42,24 @@ export const markAttendance = async (req, res) => {
         $lt: tomorrow,
       },
     });
+
+    // Anti-double-scan: Check if last action (check-in or check-out) was within 2 seconds
+    if (attendance) {
+      const lastActionTime = attendance.checkOutTime || attendance.checkInTime;
+      const timeSinceLastAction = Date.now() - new Date(lastActionTime).getTime();
+      
+      if (timeSinceLastAction < 2000) {
+        return res.status(429).json({
+          success: false,
+          message: "Please wait a moment before scanning again. Duplicate scan detected.",
+          employee: {
+            name: employee.name,
+            position: employee.position,
+            employeeId: employee.employeeId
+          }
+        });
+      }
+    }
     
     // Prepare employee details to return to frontend
     const employeeDetails = {

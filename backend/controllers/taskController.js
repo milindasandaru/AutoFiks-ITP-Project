@@ -49,6 +49,19 @@ export const createTask = async (req, res) => {
       return res.status(400).json({ message: "Title, description, and employeeId are required." });
     }
 
+    // Check task limit per employee (max 10 active tasks)
+    const activeTaskCount = await Task.countDocuments({
+      employeeId,
+      status: { $ne: 'completed' }
+    });
+
+    if (activeTaskCount >= 10) {
+      return res.status(400).json({ 
+        message: `Employee has reached the maximum limit of 10 active tasks. Complete or close existing tasks first.`,
+        currentTasks: activeTaskCount
+      });
+    }
+
     const newTask = new Task({
       title,
       description,

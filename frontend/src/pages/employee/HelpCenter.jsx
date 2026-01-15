@@ -622,11 +622,11 @@ const EmployeeHelpCenter = () => {
   );
 
   return (
-    // FULL WIDTH CONTAINER
-    <div className="w-full min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8 flex flex-col">
+    <div className="bg-gray-50 min-h-screen w-full">
+      <div className="w-full h-full">
       
       {/* Header Row */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+      <div className="p-4 md:p-6 lg:p-8 flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Help Center</h1>
           {employeeInfo && <p className="text-gray-500 text-sm mt-1">Hello {employeeInfo.name}, submit inquiries and track status.</p>}
@@ -639,11 +639,11 @@ const EmployeeHelpCenter = () => {
         </button>
       </div>
       
-      {error && <div className="bg-red-50 text-red-700 p-4 mb-6 rounded-lg border-l-4 border-red-500 text-sm">{error}</div>}
+      {error && <div className="bg-red-50 text-red-700 p-4 mb-6 mx-4 md:mx-6 lg:mx-8 rounded-lg border-l-4 border-red-500 text-sm">{error}</div>}
       
       {/* New Request Form (Collapsible) */}
       {showNewRequestForm && (
-        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-8 animate-fade-in-down">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-8 mx-4 md:mx-6 lg:mx-8 animate-fade-in-down">
           <h2 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Submit New Ticket</h2>
           <form onSubmit={handleSubmitRequest}>
             <div className="space-y-4">
@@ -718,10 +718,10 @@ const EmployeeHelpCenter = () => {
       )}
       
       {/* MAIN CONTENT SPLIT VIEW */}
-      <div className="flex flex-col lg:flex-row gap-6 items-start flex-1">
+      <div className="flex flex-col lg:flex-row gap-4 md:gap-6 items-start w-full h-[calc(100vh-200px)]">
         
         {/* LEFT PANEL: Ticket List (Fixed Width on Desktop) */}
-        <div className="w-full lg:w-96 flex-shrink-0 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden sticky top-6 h-[calc(100vh-140px)] flex flex-col">
+        <div className="w-full lg:w-1/3 bg-white shadow-sm border border-gray-100 overflow-hidden sticky top-6 h-full flex flex-col">
           <div className="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
             <h2 className="font-bold text-gray-700">My Tickets</h2>
             <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full font-bold">{helpRequests.length}</span>
@@ -767,7 +767,7 @@ const EmployeeHelpCenter = () => {
         </div>
         
         {/* RIGHT PANEL: Details & Chat (Flex-1 fills space) */}
-        <div className="flex-1 w-full h-[calc(100vh-140px)] flex flex-col bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="flex-1 w-full h-full bg-white shadow-sm border border-gray-100 overflow-hidden flex flex-col">
           {activeRequest ? (
             <>
               {/* Ticket Header */}
@@ -856,6 +856,7 @@ const EmployeeHelpCenter = () => {
             </div>
           )}
         </div>
+      </div>
       </div>
     </div>
   );
